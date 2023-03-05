@@ -1,0 +1,2 @@
+C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\Definitions.MyProject.h
+C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Source\MyProject\MyProject.h

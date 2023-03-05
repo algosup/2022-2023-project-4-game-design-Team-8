@@ -1,0 +1,19 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-MyProject-9256.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProject.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProjectCharacter.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProjectGameMode.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProjectPlayerController.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProject.init.gen.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProjectCharacter.gen.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProjectGameMode.gen.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\MyProjectPlayerController.gen.cpp.obj"
+"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\Default.rc2.res"
+/OUT:"C:\Users\ggbat\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\UE4Editor-MyProject-9256.lib"
