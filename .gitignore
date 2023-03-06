@@ -53,12 +53,12 @@ MyProject/Plugins/*/Binaries/*
 MyProject/Build/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
-!Build/*/
+!MyProject/Build/*/
 MyProject/Build/*/**
-!Build/*/PakBlacklist*.txt
+!MyProject/Build/*/PakBlacklist*.txt
 
 # Don't ignore icon files in Build
-!Build/**/*.ico
+!MyProject/Build/**/*.ico
 
 # Built data for maps
 *_BuiltData.uasset
