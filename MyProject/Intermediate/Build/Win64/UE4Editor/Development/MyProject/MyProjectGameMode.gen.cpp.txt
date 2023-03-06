@@ -1,9 +1,0 @@
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\Definitions.MyProject.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Source\MyProject/MyProjectGameMode.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Intermediate\Build\Win64\UE4Editor\Inc\MyProject\MyProjectGameMode.generated.h
