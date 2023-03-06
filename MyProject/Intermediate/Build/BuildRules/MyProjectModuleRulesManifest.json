@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"C:\\Users\\ggbat\\Desktop\\2022-2023-project-4-game-design-Team-8\\MyProject\\Source\\MyProject\\MyProject.Build.cs",
-		"C:\\Users\\ggbat\\Desktop\\2022-2023-project-4-game-design-Team-8\\MyProject\\Source\\MyProject.Target.cs",
-		"C:\\Users\\ggbat\\Desktop\\2022-2023-project-4-game-design-Team-8\\MyProject\\Source\\MyProjectEditor.Target.cs"
+		"/Users/chaputmathieu/cours/2022-2023-project-4-game-design-Team-8/MyProject/Source/MyProject/MyProject.Build.cs",
+		"/Users/chaputmathieu/cours/2022-2023-project-4-game-design-Team-8/MyProject/Source/MyProject.Target.cs",
+		"/Users/chaputmathieu/cours/2022-2023-project-4-game-design-Team-8/MyProject/Source/MyProjectEditor.Target.cs"
 	],
 	"EngineVersion": "4.27.2"
 }

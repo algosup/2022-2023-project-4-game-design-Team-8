@@ -18,6 +18,7 @@
 #include "ActorToSpawn.h"
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 AMyProjectCharacter::AMyProjectCharacter()
@@ -26,9 +27,9 @@ AMyProjectCharacter::AMyProjectCharacter()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Don't rotate character to camera direction
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = true;
-	bUseControllerRotationRoll = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
@@ -51,7 +52,7 @@ AMyProjectCharacter::AMyProjectCharacter()
 
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
 	CharacterMesh->SetupAttachment(GetCapsuleComponent());
-	CharacterMesh->AddRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	CharacterMesh->AddRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	CharacterMesh->AddRelativeLocation(FVector(0.0f, 0.0f, -88.0f));
 
 	GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
@@ -86,41 +87,80 @@ void AMyProjectCharacter::BeginPlay()
 void AMyProjectCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-	FVector mouseLocation, mouseDirection;
-	AMyProjectPlayerController* playerController = (AMyProjectPlayerController*)GetWorld()->GetFirstPlayerController();
-	playerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
+    
+    if (CursorToWorld != nullptr)
+    {
+        if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
+        {
+            if (UWorld* World = GetWorld())
+            {
+                FHitResult HitResult;
+                FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
+                FVector StartLocation = TopDownCameraComponent->GetComponentLocation();
+                FVector EndLocation = TopDownCameraComponent->GetComponentRotation().Vector() * 2000.0f;
+                Params.AddIgnoredActor(this);
+                World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
+                FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
+                CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
+            }
+        }
+        else if (APlayerController* PC = Cast<APlayerController>(GetController()))
+        {
+            FHitResult TraceHitResult;
+            PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
+            FVector CursorFV = TraceHitResult.ImpactNormal;
+            FRotator CursorR = CursorFV.Rotation();
+            CursorToWorld->SetWorldLocation(TraceHitResult.Location);
+            CursorToWorld->SetWorldRotation(CursorR);
+        }
+    }
+    
+    // Declaration of variables to hold mouse vectors.
+    FVector MouseDir = FVector::ZeroVector;
+    FVector MousePos = FVector::ZeroVector;
+    // Pass by reference to get mouse position in world space and direction vector.
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    PC->DeprojectMousePositionToWorld(MousePos, MouseDir);
 
-	FRotator currentCharacterRotation = this->GetActorRotation();
-	FRotator targetRotation = mouseDirection.Rotation();
-
-	FRotator newRotation = FRotator(currentCharacterRotation.Pitch, targetRotation.Yaw, currentCharacterRotation.Roll);
-	this->SetActorRotation(newRotation);
-	if (CursorToWorld != nullptr)
-	{
-		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-		{
-			if (UWorld* World = GetWorld())
-			{
-				FHitResult HitResult;
-				FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
-				FVector StartLocation = TopDownCameraComponent->GetComponentLocation();
-				FVector EndLocation = TopDownCameraComponent->GetComponentRotation().Vector() * 2000.0f;
-				Params.AddIgnoredActor(this);
-				World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
-				FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
-				CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
-			}
-		}
-		else if (APlayerController* PC = Cast<APlayerController>(GetController()))
-		{
-			FHitResult TraceHitResult;
-			PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
-			FVector CursorFV = TraceHitResult.ImpactNormal;
-			FRotator CursorR = CursorFV.Rotation();
-			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
-			CursorToWorld->SetWorldRotation(CursorR);
-		}
-	}
+    // Declaration of vector of intersection.
+    FVector Intersection = FVector::ZeroVector;
+    float t = 0.f;
+    // Vector from camera that crosses the plane we want the intersection.
+    FVector LineEnd = MousePos + MouseDir * 2000.f;
+    // Get intersection vector. Returns true if intersection was possible.
+    bool bIntersectionSuccess = UKismetMathLibrary::LinePlaneIntersection_OriginNormal(
+        MousePos,
+        LineEnd,
+        CharacterMesh.Transform,
+        CharacterMesh->GetActorUpVector(),
+        t,
+        Intersection
+    );
+    // Do stuff if line intersected.
+    if (bIntersectionSuccess)
+    {
+        // Calculate direction vector from the pawn body forward vector to intersection vector.
+        FVector DirToIntersection = (Intersection - CharacterMesh->GetActorLocation()).GetSafeNormal();
+        // Gets the cosine of the angle between the pawns body forward vector and the direction to intersection.
+        float dotForward = CharacterMesh->GetForwardVector() | DirToIntersection;
+        // Converts the cosine of the angle to degrees.
+        float Angle = acos(dotForward) * (180.f / PI);
+        // Only update the rotation if it is greater to avoid unwanted behaviour.
+//        if (Angle > .2f)
+//        {
+            // Clamp to limit how fast the component can rotate.
+            Angle = FMath::Clamp(Angle, 0.f, 25.f);
+            // Gets the cosine of the angle with the right vector against direction to intersection to know on what side of the component is the intersection.
+            float dotSide = CharacterMesh->GetRightVector() | DirToIntersection;
+            // Negates the value depending on what side is the intersection relative to the component.
+            Angle *= 10.f * ((dotSide > 0.f) ? 1.f : -1.f);
+            // Create rotator with variable.
+            FRotator BodyRotator = FRotator(0.f,Angle * DeltaSeconds, 0.f);
+            // Add rotation to pawn body component.
+        
+            CharacterMesh->AddRelativeRotation(BodyRotator);
+//        }
+    }
 }
 
 

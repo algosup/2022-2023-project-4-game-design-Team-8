@@ -10,5 +10,7 @@ public class MyProjectTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("MyProject");
+		bOverrideBuildEnvironment = true;
+		AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }

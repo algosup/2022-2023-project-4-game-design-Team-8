@@ -10,5 +10,7 @@ public class MyProjectEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("MyProject");
+		bOverrideBuildEnvironment = true;
+		AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }
