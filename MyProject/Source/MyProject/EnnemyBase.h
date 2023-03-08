@@ -16,7 +16,7 @@ public:
 	// Sets default values for this character's properties
 	AEnnemyBase();
 
-    void Hit(AEnnemyBase* ennemy, AActorToSpawn projectile);
+    void Hit(AActorToSpawn* projectile);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
