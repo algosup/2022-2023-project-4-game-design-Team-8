@@ -64,9 +64,9 @@ void AActorToSpawn::Tick(float DeltaTime)
 
 void AActorToSpawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
-   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
-   {
-       ennemy.DecrementHealth(DamageValue);
-   }
+//   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
+//   {
+//       ennemy.DecrementHealth(DamageValue);
+//   }
 }
 

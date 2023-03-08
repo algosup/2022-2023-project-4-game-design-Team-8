@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "ActorToSpawn.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnnemyBase.generated.h"
@@ -15,7 +16,7 @@ public:
 	// Sets default values for this character's properties
 	AEnnemyBase();
 
-    void Hit(AEnnemyBase* ennemy, AActorSpawn projectile);
+    void Hit(AEnnemyBase* ennemy, AActorToSpawn projectile);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
