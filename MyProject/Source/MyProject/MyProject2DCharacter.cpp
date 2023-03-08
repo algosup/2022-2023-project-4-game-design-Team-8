@@ -278,3 +278,20 @@ void AMyProject2DCharacter::UpdateCharacter()
     
 	
 }
+
+void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
+{
+    DecrementHealth(ennemy->DamageValue);
+}
+
+void AMyProject2DCharacter::DecrementHealth(int damage)
+{
+    Health -= damage;
+    if (Health <= 0.f)
+    {
+        Die();
+    }
+}
+void AMyProject2DCharacter::Die()
+{
+}
