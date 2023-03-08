@@ -73,3 +73,6 @@ MyProject/Plugins/*/Intermediate/*
 # Cache files for the editor to use
 MyProject/DerivedDataCache/*
 
+
+
+**/.DS_Store
