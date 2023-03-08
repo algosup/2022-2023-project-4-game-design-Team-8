@@ -3,22 +3,27 @@
 #include "MyProjectCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
+
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+
 #include "RangedWeapon.h"
 #include "ActorToSpawn.h"
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
-#include "Kismet/KismetMathLibrary.h"
 
 
 AMyProjectCharacter::AMyProjectCharacter()
@@ -131,8 +136,8 @@ void AMyProjectCharacter::Tick(float DeltaSeconds)
     bool bIntersectionSuccess = UKismetMathLibrary::LinePlaneIntersection_OriginNormal(
         MousePos,
         LineEnd,
-        CharacterMesh.Transform,
-        CharacterMesh->GetActorUpVector(),
+        GetActorLocation(),
+        GetActorUpVector(),
         t,
         Intersection
     );
@@ -140,7 +145,7 @@ void AMyProjectCharacter::Tick(float DeltaSeconds)
     if (bIntersectionSuccess)
     {
         // Calculate direction vector from the pawn body forward vector to intersection vector.
-        FVector DirToIntersection = (Intersection - CharacterMesh->GetActorLocation()).GetSafeNormal();
+        FVector DirToIntersection = (Intersection - CharacterMesh->GetComponentLocation()).GetSafeNormal();
         // Gets the cosine of the angle between the pawns body forward vector and the direction to intersection.
         float dotForward = CharacterMesh->GetForwardVector() | DirToIntersection;
         // Converts the cosine of the angle to degrees.
@@ -151,7 +156,7 @@ void AMyProjectCharacter::Tick(float DeltaSeconds)
             // Clamp to limit how fast the component can rotate.
             Angle = FMath::Clamp(Angle, 0.f, 25.f);
             // Gets the cosine of the angle with the right vector against direction to intersection to know on what side of the component is the intersection.
-            float dotSide = CharacterMesh->GetRightVector() | DirToIntersection;
+            float dotSide = CharacterMesh->GetComponentLocation() | DirToIntersection;
             // Negates the value depending on what side is the intersection relative to the component.
             Angle *= 10.f * ((dotSide > 0.f) ? 1.f : -1.f);
             // Create rotator with variable.
