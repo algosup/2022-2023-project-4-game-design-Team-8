@@ -1,9 +1,0 @@
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Intermediate\Build\Win64\UE4Editor\Development\MyProject\Definitions.MyProject.h
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Source\MyProject\RangedWeapon.h
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Intermediate\Build\Win64\UE4Editor\Inc\MyProject\RangedWeapon.generated.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Components/BoxComponent.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Components/ShapeComponent.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ShapeComponent.generated.h
-C:\Program Files (x86)\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BoxComponent.generated.h
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Source\MyProject\ActorToSpawn.h
-C:\Users\ggbat\Desktop\2022-2023-project-4-game-design-Team-8\MyProject\Intermediate\Build\Win64\UE4Editor\Inc\MyProject\ActorToSpawn.generated.h
