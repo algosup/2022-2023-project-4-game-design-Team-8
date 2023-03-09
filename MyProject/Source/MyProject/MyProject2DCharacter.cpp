@@ -25,13 +25,15 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "Engine/GameInstance.h"
+#include "Engine/EngineTypes.h"
 
 #include "Materials/Material.h"
 #include "DrawDebugHelpers.h"
+#include "TimerManager.h"
 
 #include "Math/Axis.h" 
 #include "Engine/World.h"
-
 
 
 DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
@@ -47,13 +49,13 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 	bUseControllerRotationRoll = true;
 
 	// Set the size of our collision capsule.
-	GetCapsuleComponent()->SetCapsuleHalfHeight(96.0f);
-	GetCapsuleComponent()->SetCapsuleRadius(40.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(20.0f);
 
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 800.0f;
+	CameraBoom->TargetArmLength = 450.0f;
 //	CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 75.0f);
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->bDoCollisionTest = false;
@@ -66,6 +68,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 //	SideViewCameraComponent->OrthoWidth = 2048.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
+    GunMesh->CastShadow = false;
     
     MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle Location"));
     MuzzleLocation->SetupAttachment(GunMesh);
@@ -109,7 +112,8 @@ void AMyProject2DCharacter::BeginPlay()
     Super::BeginPlay();
 
     GunMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
+    GunMesh->SetRelativeLocation(FVector(6.f,0.f,-14.f));
+    GunMesh->SetRelativeScale3D(FVector(0.45f,0.45f,0.45f));
 }
 //////////////////////////////////////////////////////////////////////////
 // Animation
@@ -118,9 +122,19 @@ void AMyProject2DCharacter::UpdateAnimation()
 {
 	const FVector PlayerVelocity = GetVelocity();
 	const float PlayerSpeedSqr = PlayerVelocity.SizeSquared();
-
+    UPaperFlipbook* DesiredAnimation;
+    
+    float GunRotation = GunMesh->GetRelativeRotation().GetComponentForAxis(EAxis::Z);
+    if (GunRotation < 90.f && GunRotation > -90.f)
+    {
+        DesiredAnimation = IdleFrontAnimation;
+    }else
+    {
+        DesiredAnimation = IdleBackAnimation;
+    }
 	// Are we moving or standing still?
-	UPaperFlipbook* DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleAnimation;
+//	UPaperFlipbook* DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleFrontAnimation;
+    
 	if( GetSprite()->GetFlipbook() != DesiredAnimation 	)
 	{
 		GetSprite()->SetFlipbook(DesiredAnimation);
@@ -216,15 +230,6 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
             GunMesh->AddRelativeRotation(FRotator(0.f, BodyRotator, 0.f));
             
         }
-        if (Controller != nullptr)
-        {
-            float GunRotation = GunMesh->GetRelativeRotation().GetComponentForAxis(EAxis::Z);
-            if (GunRotation > 0.0f)
-            {
-                float turn = GetSprite()->GetComponentRotation().GetComponentForAxis(EAxis::Z) == 0.f ? 180.f : 0.f;
-                Controller->SetControlRotation(FRotator(0.0f, turn, 0.0f));
-            }
-        }
     }
 }
 
@@ -281,7 +286,24 @@ void AMyProject2DCharacter::UpdateCharacter()
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 {
-    DecrementHealth(ennemy->DamageValue);
+//    if (bCanTakeDamage)
+//    {
+//        UGameInstance* GI = Cast<UGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+//        if(GI)
+//        {
+//            DecrementHealth(ennemy->DamageValue);
+//            bCanTakeDamage = false;
+//            UE_LOG(LogTemp, Warning, TEXT("YA NOW NO VULNERABLE"));
+//            FTimerHandle TimerHandler = FTimerHandle();
+//            GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::BecomeVulnerable,0.f,false,3.f);
+//        }
+//    }
+}
+
+void AMyProject2DCharacter::BecomeVulnerable()
+{
+    bCanTakeDamage = true;
+    UE_LOG(LogTemp, Warning, TEXT("YA NOW VULNERABLE"));
 }
 
 void AMyProject2DCharacter::DecrementHealth(int damage)
@@ -294,4 +316,5 @@ void AMyProject2DCharacter::DecrementHealth(int damage)
 }
 void AMyProject2DCharacter::Die()
 {
+    UE_LOG(LogTemp, Warning, TEXT("YA DEAD"));
 }

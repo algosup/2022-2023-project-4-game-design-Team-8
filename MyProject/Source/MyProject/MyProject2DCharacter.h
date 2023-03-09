@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperCharacter.h"
 #include "EnnemyBase.h"
+#include "PaperCharacter.h"
 #include "MyProject2DCharacter.generated.h"
 
 class UTextRenderComponent;
@@ -43,7 +43,19 @@ protected:
 
 	// The animation to play while idle (standing still)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-	class UPaperFlipbook* IdleAnimation;
+	class UPaperFlipbook* IdleFrontAnimation;
+    
+    // The animation to play while idle (standing still)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+    class UPaperFlipbook* IdleBackAnimation;
+    
+    // The animation to play while idle (standing still)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+    class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+    class UPaperFlipbook* IdleRightAnimation;
+    
 
 	/** Called to choose the correct animation to play based on the character's movement state */
 	void UpdateAnimation();
@@ -67,9 +79,7 @@ protected:
     void OnFire();
 public:
 	AMyProject2DCharacter();
-	void Hit(AEnnemyBase* ennemy);
-
-    
+	
     UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         class USkeletalMeshComponent* GunMesh;
     
@@ -82,11 +92,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
         FVector GunOffset;
 
-
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     FRotator SpawnRotation;
     FVector SpawnLocation;
+    void Hit(AEnnemyBase* ennemy);
+private:
+    bool bCanTakeDamage = true;
+    void BecomeVulnerable();
 };
