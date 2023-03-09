@@ -99,6 +99,8 @@ public:
     FRotator SpawnRotation;
     FVector SpawnLocation;
     void Hit(AEnnemyBase* ennemy);
+    FTimerHandle TimerHandler;
+
 private:
     bool bCanTakeDamage = true;
     void BecomeVulnerable();

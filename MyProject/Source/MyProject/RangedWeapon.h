@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EnnemyBase.h"
 #include "RangedWeapon.generated.h"
 
 UCLASS()
@@ -22,12 +23,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-public:
-
-	UFUNCTION()
-		void SpawnActor();
+	AEnnemyBase* actor;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBoxComponent* SpawnVolume;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AEnnemyBase> Projectile;
 };

@@ -3,7 +3,7 @@
 
 #include "RangedWeapon.h"
 #include "Components/BoxComponent.h"
-#include "ActorToSpawn.h"
+#include "EnnemyBase.h"
 // Sets default values
 ARangedWeapon::ARangedWeapon()
 {
@@ -19,20 +19,25 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	FVector SpawnLocation = GetActorLocation();
+	FRotator SpawnRotation = GetActorRotation();
+	actor = GetWorld()->SpawnActor<AEnnemyBase>(Projectile,SpawnLocation, SpawnRotation);
 }
 
 // Called every frame
 void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (actor)
+	{
+		if (actor->IsActorBeingDestroyed())
+		{
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-}
-
-void ARangedWeapon::SpawnActor()
-{
-	FVector SpawnLocation = GetActorLocation();
-	FRotator SpawnRotation = GetActorRotation();
-
-	GetWorld()->SpawnActor<AActorToSpawn>(SpawnLocation, SpawnRotation);
+			FVector SpawnLocation = GetActorLocation();
+			FRotator SpawnRotation = GetActorRotation();
+			actor = GetWorld()->SpawnActor<AEnnemyBase>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+		}
+	}
 }
