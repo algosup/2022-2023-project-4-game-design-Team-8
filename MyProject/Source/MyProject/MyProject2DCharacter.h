@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PaperCharacter.h"
+#include "EnnemyBase.h"
 #include "MyProject2DCharacter.generated.h"
 
 class UTextRenderComponent;
@@ -55,6 +56,9 @@ protected:
 
 	void UpdateCharacter();
 
+	void DecrementHealth(int damage);
+	void Die();
+	float Health = 100.f;
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -63,7 +67,8 @@ protected:
     void OnFire();
 public:
 	AMyProject2DCharacter();
-    
+	void Hit(AEnnemyBase* ennemy);
+
     
     UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         class USkeletalMeshComponent* GunMesh;

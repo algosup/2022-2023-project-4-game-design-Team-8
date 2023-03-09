@@ -29,6 +29,7 @@
 #include "Materials/Material.h"
 #include "DrawDebugHelpers.h"
 
+#include "Math/Axis.h" 
 #include "Engine/World.h"
 
 
@@ -197,34 +198,33 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
         // Converts the cosine of the angle to degrees.
         float Angle = acos(dotForward) * (180.f / PI);
         // Only update the rotation if it is greater to avoid unwanted behaviour.
-//        if (Angle > .2f)
-//        {
+        if (Angle > .2f)
+        {
             // Clamp to limit how fast the component can rotate.
-            Angle = FMath::Clamp(Angle, 0.f, 25.f);
+            //Angle = FMath::Clamp(Angle, 0.f, 25.f);
+            
             // Gets the cosine of the angle with the right vector against direction to intersection to know on what side of the component is the intersection.
-        float dotSide = GunMesh->GetForwardVector() | DirToIntersection;
+            float dotSide = GunMesh->GetForwardVector() | DirToIntersection;
+
             // Negates the value depending on what side is the intersection relative to the component.
             Angle *= 10.f * ((dotSide < 0.f) ? 1.f : -1.f);
+
             // Create rotator with variable.
-        float BodyRotator = Angle * DeltaSeconds;
-        GunMesh->AddRelativeRotation(FRotator(0.f,BodyRotator,0.f));
-//         Set the rotation so that the character faces his direction of travel.
-//        if (Controller != nullptr)
-//        {
-//            if (BodyRotator < 0.0f)
-//            {
-//    //  GetSprite()->SetRelativeRotation(FRotator(0.f,90.f,30.f));
-//                Controller->SetControlRotation(FRotator(0.0, 0.0f, 0.0f));
-//            }
-//            else if (BodyRotator > 0.0f)
-//            {
-//    //  GetSprite()->SetRelativeRotation(FRotator(0.f,90.f,-30.f));
-//                Controller->SetControlRotation(FRotator(0.0f, 180.0f, 0.0f));
-//            }
-//        }
-        DrawDebugLine(GetWorld(), GetActorLocation(), Intersection, FColor::Orange, false, -1.f, 0, 4.f);
-                DrawDebugSphere(GetWorld(), Intersection, 10.f, 16, FColor::Red, false);
-//        }
+            float BodyRotator = Angle * DeltaSeconds;
+        
+            //Set the rotation so that the character faces his direction of travel.
+            GunMesh->AddRelativeRotation(FRotator(0.f, BodyRotator, 0.f));
+            
+        }
+        if (Controller != nullptr)
+        {
+            float GunRotation = GunMesh->GetRelativeRotation().GetComponentForAxis(EAxis::Z);
+            if (GunRotation > 0.0f)
+            {
+                float turn = GetSprite()->GetComponentRotation().GetComponentForAxis(EAxis::Z) == 0.f ? 180.f : 0.f;
+                Controller->SetControlRotation(FRotator(0.0f, turn, 0.0f));
+            }
+        }
     }
 }
 
@@ -277,4 +277,21 @@ void AMyProject2DCharacter::UpdateCharacter()
 	
     
 	
+}
+
+void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
+{
+    DecrementHealth(ennemy->DamageValue);
+}
+
+void AMyProject2DCharacter::DecrementHealth(int damage)
+{
+    Health -= damage;
+    if (Health <= 0.f)
+    {
+        Die();
+    }
+}
+void AMyProject2DCharacter::Die()
+{
 }

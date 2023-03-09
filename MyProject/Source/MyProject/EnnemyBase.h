@@ -16,11 +16,15 @@ public:
 	// Sets default values for this character's properties
 	AEnnemyBase();
 
-    void Hit(AEnnemyBase* ennemy, AActorToSpawn projectile);
+    void Hit(AActorToSpawn* projectile);
+
+	UPROPERTY(EditAnywhere)
+		float DamageValue = 20.0f;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
     void DecrementHealth(int damage);
     void Die();
     float Health = 100.f;
+	
 };

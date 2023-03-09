@@ -16,18 +16,18 @@ void AEnnemyBase::BeginPlay()
 	
 }
 
-void AEnnemyBase::Hit(AEnnemyBase* ennemy, AActorToSpawn projectile)
+void AEnnemyBase::Hit(AActorToSpawn* projectile)
 {
-//    ennemy.DecrementHealth(projectile.DamageValue)
+	DecrementHealth(projectile->DamageValue);
 }
 
 void AEnnemyBase::DecrementHealth(int damage)
 {
-//    Health -= damage;
-//    if(Health <= 0.f)
-//    {
-//        Die();
-//    }
+    Health -= damage;
+    if(Health <= 0.f)
+    {
+        Die();
+    }
 }
 void AEnnemyBase::Die()
 {

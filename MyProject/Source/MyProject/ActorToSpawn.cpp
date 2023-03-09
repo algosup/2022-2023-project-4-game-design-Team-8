@@ -2,6 +2,7 @@
 
 
 #include "ActorToSpawn.h"
+#include "EnnemyBase.h"
 #include "Components/SphereComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -64,9 +65,10 @@ void AActorToSpawn::Tick(float DeltaTime)
 
 void AActorToSpawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
-//   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
-//   {
-//       ennemy.DecrementHealth(DamageValue);
-//   }
+   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
+   {
+       ennemy->Hit(this);
+       Destroy();
+   }
 }
 
