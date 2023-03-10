@@ -3,7 +3,8 @@
 
 #include "RangedWeapon.h"
 #include "Components/BoxComponent.h"
-#include "ActorToSpawn.h"
+#include "EnnemyBase.h"
+#include "TimerManager.h"
 // Sets default values
 ARangedWeapon::ARangedWeapon()
 {
@@ -19,20 +20,12 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorld()->GetTimerManager().SetTimer(SpawnHandle,this,&ARangedWeapon::Spawn,2.0f,true);
 }
 
 // Called every frame
 void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-void ARangedWeapon::SpawnActor()
-{
-	FVector SpawnLocation = GetActorLocation();
-	FRotator SpawnRotation = GetActorRotation();
-
-	GetWorld()->SpawnActor<AActorToSpawn>(SpawnLocation, SpawnRotation);
+	GetWorld()->SpawnActor<AEnnemyBase>(Projectile, FVector(0.f,0.f,210.f), FRotator(0.f,0.f,0.f));
 }

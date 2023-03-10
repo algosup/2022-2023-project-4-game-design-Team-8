@@ -56,7 +56,6 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 450.0f;
-//	CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 75.0f);
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->SetRelativeRotation(FRotator(-50.0f, -90.0f, 0.0f));
@@ -64,34 +63,21 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
-//	SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Perspective;
-//	SideViewCameraComponent->OrthoWidth = 2048.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+
     GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
     GunMesh->CastShadow = false;
     
     MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle Location"));
     MuzzleLocation->SetupAttachment(GunMesh);
     MuzzleLocation->SetRelativeLocation(FVector(0.0f, 56.5f, 11.3f));
-	// Prevent all automatic rotation behavior on the camera, character, and camera component
-//	CameraBoom->SetUsingAbsoluteRotation(true);
-//	SideViewCameraComponent->bUsePawnControlRotation = false;
-//	SideViewCameraComponent->bAutoActivate = true;
-//	GetCharacterMovement()->bOrientRotationToMovement = false;
 
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	GetCharacterMovement()->MaxFlySpeed = 600.0f;
+    GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
 
-	// Lock character motion onto the XZ plane, so the character can't move in or out of the screen
-//	GetCharacterMovement()->bConstrainToPlane = true;
-//	GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, -1.0f, 0.0f));
-
-	// Behave like a traditional 2D platformer character, with a flat bottom instead of a curved capsule bottom
-	// Note: This can cause a little floating when going up inclines; you can choose the tradeoff between better
-	// behavior on the edge of a ledge versus inclines by setting this to true or false
-	GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
 
     CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
     CursorToWorld->SetupAttachment(RootComponent);
@@ -279,36 +265,35 @@ void AMyProject2DCharacter::MoveUp(float Value)
 
 void AMyProject2DCharacter::UpdateCharacter()
 {
-	
-    
-	
 }
+
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 {
-//    if (bCanTakeDamage)
-//    {
-//        UGameInstance* GI = Cast<UGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-//        if(GI)
-//        {
-//            DecrementHealth(ennemy->DamageValue);
-//            bCanTakeDamage = false;
-//            UE_LOG(LogTemp, Warning, TEXT("YA NOW NO VULNERABLE"));
-//            FTimerHandle TimerHandler = FTimerHandle();
-//            GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::BecomeVulnerable,0.f,false,3.f);
-//        }
-//    }
+    if (bCanTakeDamage)
+    {
+        UGameInstance* GI = Cast<UGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+        if(GI)
+        {
+            DecrementHealth(ennemy->DamageValue);
+            bCanTakeDamage = false;
+            if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+            {
+                GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::BecomeVulnerable,3.f,false);
+            }
+        }
+    }
 }
 
 void AMyProject2DCharacter::BecomeVulnerable()
 {
     bCanTakeDamage = true;
-    UE_LOG(LogTemp, Warning, TEXT("YA NOW VULNERABLE"));
 }
 
 void AMyProject2DCharacter::DecrementHealth(int damage)
 {
     Health -= damage;
+    UE_LOG(LogTemp, Warning, TEXT("health : %.0f"), Health);
     if (Health <= 0.f)
     {
         Die();
@@ -316,5 +301,4 @@ void AMyProject2DCharacter::DecrementHealth(int damage)
 }
 void AMyProject2DCharacter::Die()
 {
-    UE_LOG(LogTemp, Warning, TEXT("YA DEAD"));
 }

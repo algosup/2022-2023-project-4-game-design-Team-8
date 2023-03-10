@@ -17,11 +17,14 @@ public:
 	// Sets default values for this character's properties
 	AEnnemyBase();
 
+	virtual void Tick(float DeltaTime) override;
 
     void Hit(AActorToSpawn* projectile);
 //    void Hit(MeleeWeapon* projectile);
-    void HitPlayer(AMyProject2DCharacter* player);
-
+	UPROPERTY(VisibleDefaultsOnly)
+		class UCapsuleComponent* CapsuleComp;
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 10.0f;
 protected:
