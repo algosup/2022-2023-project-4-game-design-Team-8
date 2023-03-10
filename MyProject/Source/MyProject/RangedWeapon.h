@@ -24,10 +24,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	AEnnemyBase* actor;
-
+    void Spawn();
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBoxComponent* SpawnVolume;
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AEnnemyBase> Projectile;
+    
+    FTimerHandle SpawnHandle;
 };

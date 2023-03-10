@@ -4,6 +4,7 @@
 #include "RangedWeapon.h"
 #include "Components/BoxComponent.h"
 #include "EnnemyBase.h"
+#include "TimerManager.h"
 // Sets default values
 ARangedWeapon::ARangedWeapon()
 {
@@ -19,25 +20,12 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	FVector SpawnLocation = GetActorLocation();
-	FRotator SpawnRotation = GetActorRotation();
-	actor = GetWorld()->SpawnActor<AEnnemyBase>(Projectile,SpawnLocation, SpawnRotation);
+	GetWorld()->GetTimerManager().SetTimer(SpawnHandle,this,&ARangedWeapon::Spawn,2.0f,true);
 }
 
 // Called every frame
 void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (actor)
-	{
-		if (actor->IsActorBeingDestroyed())
-		{
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-			FVector SpawnLocation = GetActorLocation();
-			FRotator SpawnRotation = GetActorRotation();
-			actor = GetWorld()->SpawnActor<AEnnemyBase>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
-		}
-	}
+	GetWorld()->SpawnActor<AEnnemyBase>(Projectile, FVector(0.f,0.f,210.f), FRotator(0.f,0.f,0.f));
 }
