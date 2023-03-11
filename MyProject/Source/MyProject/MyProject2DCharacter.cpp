@@ -55,14 +55,16 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 450.0f;
+	CameraBoom->TargetArmLength = 300.0f;
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->bDoCollisionTest = false;
-	CameraBoom->SetRelativeRotation(FRotator(-50.0f, -90.0f, 0.0f));
-    GetSprite()->SetRelativeRotation(FRotator(0.f,0.f,0.f));
+	CameraBoom->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
+    GetSprite()->SetRelativeRotation(FRotator(0.f,0.f,-90.f));
 
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
+    SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
+    SideViewCameraComponent->OrthoWidth = 1024.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
     GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
@@ -77,7 +79,8 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	GetCharacterMovement()->MaxFlySpeed = 600.0f;
     GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
-
+    /*GetCharacterMovement()->bConstrainToPlane = true;
+    GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
 
     CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
     CursorToWorld->SetupAttachment(RootComponent);
@@ -163,9 +166,6 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
     // Update animation to match the motion
     UpdateAnimation();
 
-    // Now setup the rotation of the controller based on the direction we are travelling
-    const FVector PlayerVelocity = GetVelocity();
-    float TravelDirection = PlayerVelocity.X;
     
     // Declaration of variables to hold mouse vectors.
     FVector MouseDir = FVector::ZeroVector;

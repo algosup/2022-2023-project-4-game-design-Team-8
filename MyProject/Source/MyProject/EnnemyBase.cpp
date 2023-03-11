@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 
 #include "EnnemyBase.h"
 #include "MyProject2DCharacter.h"
 #include "ActorToSpawn.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "PaperFlipbookComponent.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 // Sets default values
 AEnnemyBase::AEnnemyBase()
 {
@@ -15,6 +17,10 @@ AEnnemyBase::AEnnemyBase()
 
     //CapsuleComp->SetCapsuleHalfHeight(40.0f);
     //CapsuleComp->SetCapsuleRadius(50.0f);
+
+    /*GetCharacterMovement()->bConstrainToPlane = true;
+    GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
+    GetSprite()->SetRelativeRotation(FRotator(0.f, 0.f, -90.f));
 }
 // Called when the game starts or when spawned
 void AEnnemyBase::BeginPlay()

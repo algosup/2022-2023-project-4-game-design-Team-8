@@ -5,11 +5,12 @@
 #include "ActorToSpawn.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "PaperCharacter.h"
 #include "EnnemyBase.generated.h"
 
 class AMyProject2DCharacter;
 UCLASS()
-class MYPROJECT_API AEnnemyBase : public ACharacter
+class MYPROJECT_API AEnnemyBase : public APaperCharacter
 {
 	GENERATED_BODY()
 
@@ -23,6 +24,26 @@ public:
 //    void Hit(MeleeWeapon* projectile);
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCapsuleComponent* CapsuleComp;
+
+	// The animation to play while running around
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* RunningAnimation;
+
+	// The animation to play while idle (standing still)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* IdleFrontAnimation;
+
+	// The animation to play while idle (standing still)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* IdleBackAnimation;
+
+	// The animation to play while idle (standing still)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* IdleRightAnimation;
+
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UPROPERTY(EditAnywhere)

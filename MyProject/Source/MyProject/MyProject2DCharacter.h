@@ -7,8 +7,6 @@
 #include "PaperCharacter.h"
 #include "MyProject2DCharacter.generated.h"
 
-class UTextRenderComponent;
-
 /**
  * This class is the default character for MyProject, and it is responsible for all
  * physical interaction between the player and the world.
@@ -34,7 +32,6 @@ class AMyProject2DCharacter : public APaperCharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     class UDecalComponent* CursorToWorld;
     
-	UTextRenderComponent* TextComponent;
 	virtual void Tick(float DeltaSeconds) override;
 protected:
 	// The animation to play while running around

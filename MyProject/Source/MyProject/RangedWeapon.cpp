@@ -20,7 +20,7 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimer(SpawnHandle,this,&ARangedWeapon::Spawn,2.0f,true);
+	//GetWorld()->GetTimerManager().SetTimer(SpawnHandle,this,&ARangedWeapon::Spawn,2.0f,true);
 }
 
 // Called every frame
