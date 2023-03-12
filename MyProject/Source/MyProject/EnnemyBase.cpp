@@ -28,8 +28,6 @@ void AEnnemyBase::BeginPlay()
 	Super::BeginPlay();
 
     CapsuleComp = GetCapsuleComponent();
-    //CapsuleComp->SetSimulatePhysics(true);
-//    RootComponent->SetRelativeScale3D(FVector(0.4f,0.4f,0.4f));
     CapsuleComp->OnComponentHit.AddDynamic(this, &AEnnemyBase::OnHit);
 }
 
