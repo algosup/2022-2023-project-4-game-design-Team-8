@@ -5,6 +5,7 @@
 #include "EnnemyBase.h"
 #include "Components/SphereComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "PhysicsEngine/BodyInstance.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 // Sets default values
 AActorToSpawn::AActorToSpawn()
@@ -15,6 +16,8 @@ AActorToSpawn::AActorToSpawn()
     //Creating our Default Components
     SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
     SphereComp->InitSphereRadius(16.0f);
+//    SphereComp->bConstrainToPlane = true;
+    SphereComp->SetConstraintMode(EDOFMode::XYPlane);
     RootComponent = SphereComp;
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projetcile Movement"));
@@ -23,9 +26,10 @@ AActorToSpawn::AActorToSpawn()
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = false;
-    ProjectileMovement->Velocity = FVector(0.0f, 1.0f, 0.0f);
+ 
+    ProjectileMovement->Velocity = FVector(1.0f, 0.0f, 1.0f);
     InitialLifeSpan = 3.0f;
-
+    
 
     //Attaching the Components and setting physics
     SphereComp->SetupAttachment(RootComponent);
@@ -36,6 +40,7 @@ AActorToSpawn::AActorToSpawn()
 void AActorToSpawn::BeginPlay()
 {
 	Super::BeginPlay();
+    UE_LOG(LogTemp,Warning,TEXT("Velocity"), *ProjectileMovement->Velocity.ToString());
     SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AActorToSpawn::OnHit);
 }
 

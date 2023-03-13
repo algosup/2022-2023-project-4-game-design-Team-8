@@ -28,7 +28,7 @@ void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
     GunSprite->SetFlipbook(GunMesh);
-    MuzzleLocation->SetRelativeLocation(FVector(0.0f, 0.f, 0.f));
+    MuzzleLocation->SetRelativeLocation(FVector(-5.5f, 1.f, 0.f));
 }
 
 // Called every frame
@@ -38,12 +38,10 @@ void ARangedWeapon::Tick(float DeltaTime)
 
     // Declaration of variables to hold mouse vectors.
     // Pass by reference to get mouse position in world space and direction vector.
-//    if (PC)
-//    {
-    
-//    UE_LOG(LogTemp,Warning,TEXT("rotator %s"), PC->ToString());
-    RotateGun(DeltaTime);
-//    }
+    if (PC)
+    {
+        RotateGun(DeltaTime);
+    }
     
 }
 
@@ -61,6 +59,7 @@ void ARangedWeapon::OnFire()
         GetWorld()->SpawnActor<AActorToSpawn>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
     }
 }
+
 void ARangedWeapon::RotateGun(float DeltaTime)
 {
     FVector playerLoc = GetActorLocation();
