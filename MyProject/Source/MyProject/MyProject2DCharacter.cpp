@@ -36,6 +36,7 @@
 #include "Engine/World.h"
 
 
+
 DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,7 +99,9 @@ void AMyProject2DCharacter::BeginPlay()
     {
         RangedWeapon = Weapon;
         RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
-        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,90.f));
+        RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
+        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
+        RangedWeapon->SetActorScale3D(FVector(2.5f,2.5f,2.5f));
         APlayerController* PC = Cast<APlayerController>(GetController());
         RangedWeapon->SetPC(PC);
     }
@@ -164,7 +167,6 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
     
     // Update animation to match the motion
     UpdateAnimation();
-
     
     
 }

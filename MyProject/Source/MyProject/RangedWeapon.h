@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnnemyBase.h"
+#include "PaperSpriteComponent.h"
+#include "PaperFlipbookComponent.h"
 #include "RangedWeapon.generated.h"
 
 UCLASS()
@@ -16,10 +18,12 @@ public:
 	// Sets default values for this actor's properties
 	ARangedWeapon();	 
 
-	void SetPC(APlayerController* PlayerController) { PC = PlayerController; };
+	void SetPC(APlayerController* PlayerController) {
+        PC = PlayerController;
+//        UE_LOG(LogTemp,Warning,TEXT("SETPC"));
+    };
 
 protected:
-	ARangedWeapon(const FObjectInitializer& PCIP);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -28,7 +32,9 @@ public:
 	void OnFire();
 	FRotator SpawnRotation;
 	FVector SpawnLocation;
-	APlayerController* PC;
+    
+    UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Controller)
+        APlayerController* PC;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = Mesh)
