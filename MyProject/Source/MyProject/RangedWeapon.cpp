@@ -20,12 +20,12 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimer(SpawnHandle,this,&ARangedWeapon::Spawn,2.0f,true);
+	// GetWorld()->GetTimerManager().SetTimer(SpawnHandle,this,&ARangedWeapon::Spawn,2.0f,true);
 }
 
 // Called every frame
 void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	GetWorld()->SpawnActor<AEnnemyBase>(Projectile, FVector(0.f,0.f,210.f), FRotator(0.f,0.f,0.f));
+	// GetWorld()->SpawnActor<AEnnemyBase>(Projectile, FVector(0.f,0.f,210.f), FRotator(0.f,0.f,0.f));
 }
