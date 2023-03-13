@@ -5,7 +5,7 @@
 #include "RangedWeapon.h"
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
-#include "ActorToSpawn.h"
+#include "Projectile.h"
 
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -51,7 +51,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 
 	// Set the size of our collision capsule.
 	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
-	GetCapsuleComponent()->SetCapsuleRadius(20.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(30.0f);
 
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

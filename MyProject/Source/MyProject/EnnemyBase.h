@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "ActorToSpawn.h"
+#include "Projectile.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "PaperCharacter.h"
@@ -20,7 +20,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-    void Hit(AActorToSpawn* projectile);
+    void Hit(AProjectile* projectile);
 //    void Hit(MeleeWeapon* projectile);
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCapsuleComponent* CapsuleComp;

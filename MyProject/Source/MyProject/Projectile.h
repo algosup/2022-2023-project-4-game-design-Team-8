@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ActorToSpawn.generated.h"
+#include "Projectile.generated.h"
 
 UCLASS()
-class MYPROJECT_API AActorToSpawn : public AActor
+class MYPROJECT_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AActorToSpawn();
+	AProjectile();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,7 +21,11 @@ protected:
 
 public:	
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-		class USphereComponent* SphereComp;
+		class UPaperFlipbookComponent* ProjectileSprite;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		class UPaperFlipbook* Projectile;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		class USphereComponent* ProjectileHitbox;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UParticleSystemComponent* ParticleComp;
@@ -30,7 +34,7 @@ public:
 		class UProjectileMovementComponent* ProjectileMovement;
 
 	UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
+		void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 20.0f;

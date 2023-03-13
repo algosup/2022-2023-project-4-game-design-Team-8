@@ -33,8 +33,7 @@ public:
 	FRotator SpawnRotation;
 	FVector SpawnLocation;
     
-    UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Controller)
-        APlayerController* PC;
+    APlayerController* PC;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = Mesh)
@@ -47,7 +46,7 @@ public:
 		class USceneComponent* MuzzleLocation;
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AActorToSpawn> Projectile;
+		TSubclassOf<class AProjectile> Projectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector GunOffset;

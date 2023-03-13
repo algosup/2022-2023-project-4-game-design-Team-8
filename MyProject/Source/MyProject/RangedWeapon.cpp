@@ -6,7 +6,6 @@
 #include "Components/SceneComponent.h"
 #include "EnnemyBase.h"
 #include "GameFramework/PlayerController.h"
-#include "PaperSpriteComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PaperSpriteComponent.h"
 #include "PaperFlipbookComponent.h"
@@ -52,12 +51,13 @@ void ARangedWeapon::OnFire()
     {
         SpawnRotation = GetActorRotation();
         
-        SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
-        
+        SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) /*+SpawnRotation.RotateVector(GunOffset)*/;
+
+
         FActorSpawnParameters ActorSpawnParams;
-        ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-        AActorToSpawn* projec = Cast<AActorToSpawn>(Projectile);
-        GetWorld()->SpawnActor<AActorToSpawn>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+        ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        AProjectile* projec = Cast<AProjectile>(Projectile);
+        GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
     }
 }
 

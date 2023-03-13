@@ -3,7 +3,7 @@
 
 #include "EnnemyBase.h"
 #include "MyProject2DCharacter.h"
-#include "ActorToSpawn.h"
+#include "Projectile.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
 
@@ -15,8 +15,8 @@ AEnnemyBase::AEnnemyBase()
     PrimaryActorTick.bCanEverTick = true;
     //CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
 
-    //CapsuleComp->SetCapsuleHalfHeight(40.0f);
-    //CapsuleComp->SetCapsuleRadius(50.0f);
+    GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
+    GetCapsuleComponent()->SetCapsuleRadius(30.0f);
 
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
@@ -46,7 +46,7 @@ void AEnnemyBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
     }
 }
 
-void AEnnemyBase::Hit(AActorToSpawn* projectile)
+void AEnnemyBase::Hit(AProjectile* projectile)
 {
 	DecrementHealth(projectile->DamageValue);
 }
