@@ -36,14 +36,14 @@ void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
     // Declaration of variables to hold mouse vectors.
-    // Pass by reference to get mouse position in world space and direction vector.
-//    if (PC)
-//    {
+    // Pass by reference to get mouse position in world space and direction vector
+  if (PC)
+  {
     
-//    UE_LOG(LogTemp,Warning,TEXT("rotator %s"), PC->ToString());
     RotateGun(DeltaTime);
-//    }
+  }
     
 }
 
