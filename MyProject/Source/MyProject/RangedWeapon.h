@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnnemyBase.h"
+#include "PaperSpriteComponent.h"
+#include "PaperFlipbookComponent.h"
 #include "RangedWeapon.generated.h"
 
 UCLASS()
@@ -14,22 +16,42 @@ class MYPROJECT_API ARangedWeapon : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	ARangedWeapon();
+	ARangedWeapon();	 
+
+	void SetPC(APlayerController* PlayerController) {
+        PC = PlayerController;
+//        UE_LOG(LogTemp,Warning,TEXT("SETPC"));
+    };
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	AEnnemyBase* actor;
-    	// void Spawn();
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UBoxComponent* SpawnVolume;
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AEnnemyBase> Projectile;
+	void OnFire();
+	FRotator SpawnRotation;
+	FVector SpawnLocation;
     
-    FTimerHandle SpawnHandle;
+    UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Controller)
+        APlayerController* PC;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+		class UPaperFlipbookComponent* GunSprite;
+
+	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+		class UPaperFlipbook* GunMesh;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		class USceneComponent* MuzzleLocation;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AActorToSpawn> Projectile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		FVector GunOffset;
+
+	void RotateGun(float DeltaTime);
+	FRotator GetGunRotation() { return GetActorRotation(); }
 };

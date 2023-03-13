@@ -39,13 +39,6 @@ void AActorToSpawn::BeginPlay()
     SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AActorToSpawn::OnHit);
 }
 
-// Called every frame
-void AActorToSpawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void AActorToSpawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
 
