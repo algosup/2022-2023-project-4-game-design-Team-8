@@ -51,13 +51,12 @@ void ARangedWeapon::OnFire()
     {
         SpawnRotation = GetActorRotation();
         
-        SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) /*+SpawnRotation.RotateVector(GunOffset)*/;
+        SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
 
 
         FActorSpawnParameters ActorSpawnParams;
         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-        AProjectile* projec = Cast<AProjectile>(Projectile);
-        GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+        GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, FRotator(), ActorSpawnParams);
     }
 }
 

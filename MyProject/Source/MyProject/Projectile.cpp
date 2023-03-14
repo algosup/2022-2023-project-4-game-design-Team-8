@@ -5,46 +5,57 @@
 #include "EnnemyBase.h"
 
 #include "PhysicsEngine/BodyInstance.h"
-
-#include "PaperSpriteComponent.h"
-#include "Components/SphereComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
+#include "PaperSpriteComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 // Sets default values
-AProjectile::AProjectile()
+AProjectile::AProjectile(const FObjectInitializer& PCIP) : Super(PCIP)
 {
-    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    PrimaryActorTick.bCanEverTick = true;
-
+    struct FConstructorStatics
+    {
+        ConstructorHelpers::FObjectFinderOptional<UPaperFlipbook> projectileAsset;
+        FConstructorStatics() : projectileAsset(TEXT("PaperFlipbook'/Game/2DSideScroller/Sprites/Bullet.Bullet'")){}
+    };
+    static FConstructorStatics ConstructorStatics;
+    
+    Projectile = ConstructorStatics.projectileAsset.Get();
+    
     //Creating our Default Components
-    ProjectileSprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Sphere Sprite"));
+    ProjectileSprite = PCIP.CreateDefaultSubobject<UPaperFlipbookComponent>(this,TEXT("Projectile Sprite"));
     RootComponent = ProjectileSprite;
     //    SphereComp->bConstrainToPlane = true;
     ProjectileSprite->SetConstraintMode(EDOFMode::XYPlane);
     ProjectileSprite->SetSimulatePhysics(true);
-
-    ProjectileHitbox = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Hitbox"));
+    
+    ProjectileHitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sphere Hitbox"));
     ProjectileHitbox->SetRelativeScale3D(FVector(0.1f,0.1f,0.1f));
-    ProjectileHitbox->SetupAttachment(RootComponent);
+    ProjectileHitbox->AttachTo(RootComponent);
 
-    ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projetcile Movement"));
+    ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
     ProjectileMovement->UpdatedComponent = ProjectileSprite;
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bRotationFollowsVelocity = false;
     ProjectileMovement->bShouldBounce = false;
+    ProjectileMovement->SetPlaneConstraintEnabled(true);
+    ProjectileMovement->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
     //ProjectileMovement->ProjectileGravityScale = 0;
 
-    ProjectileMovement->Velocity = FVector(1.0f, 1.0f, 0.0f);
     InitialLifeSpan = 3.0f;
+    
+    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+    ProjectileMovement->Velocity = -ProjectileMovement->Velocity;
+    ProjectileSprite->SetRelativeRotation(FRotator(0.f,0.f,90.f));
     ProjectileSprite->SetFlipbook(Projectile);
-    ProjectileSprite->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
     ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
 }
 

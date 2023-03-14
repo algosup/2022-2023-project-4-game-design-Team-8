@@ -13,22 +13,19 @@ class MYPROJECT_API AProjectile : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	AProjectile();
+	AProjectile(const FObjectInitializer& PCIP);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 		class UPaperFlipbookComponent* ProjectileSprite;
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 		class UPaperFlipbook* Projectile;
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		class USphereComponent* ProjectileHitbox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UParticleSystemComponent* ParticleComp;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = Projectile)
+		class UCapsuleComponent* ProjectileHitbox;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = Movement)
 		class UProjectileMovementComponent* ProjectileMovement;
