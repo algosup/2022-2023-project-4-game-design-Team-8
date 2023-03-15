@@ -24,7 +24,6 @@ public:
 //    void Hit(MeleeWeapon* projectile);
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCapsuleComponent* CapsuleComp;
-
 	// The animation to play while running around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 		class UPaperFlipbook* RunningAnimation;

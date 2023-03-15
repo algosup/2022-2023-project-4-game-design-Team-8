@@ -27,7 +27,7 @@ void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
     GunSprite->SetFlipbook(GunMesh);
-    MuzzleLocation->SetRelativeLocation(FVector(-5.5f, 1.f, 0.f));
+    MuzzleLocation->SetRelativeLocation(FVector(-0.f, 0.f, 0.f));
 }
 
 // Called every frame
@@ -52,11 +52,13 @@ void ARangedWeapon::OnFire()
         SpawnRotation = GetActorRotation();
         
         SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
-
-
+        
+        UE_LOG(LogTemp,Warning,TEXT("MuzzleLocation GetRelativeLocation() : %s"), *MuzzleLocation->GetRelativeLocation().ToString());
+        UE_LOG(LogTemp,Warning,TEXT("MuzzleLocation GetComponentLocation() : %s"), *MuzzleLocation->GetComponentLocation().ToString());
+        UE_LOG(LogTemp,Warning,TEXT("SpawnLocation : %s"), *SpawnLocation.ToString());
         FActorSpawnParameters ActorSpawnParams;
         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-        GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, FRotator(), ActorSpawnParams);
+        GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
     }
 }
 

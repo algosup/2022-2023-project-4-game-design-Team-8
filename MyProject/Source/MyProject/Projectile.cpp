@@ -21,7 +21,7 @@ AProjectile::AProjectile(const FObjectInitializer& PCIP) : Super(PCIP)
     static FConstructorStatics ConstructorStatics;
     
     Projectile = ConstructorStatics.projectileAsset.Get();
-    
+
     //Creating our Default Components
     ProjectileSprite = PCIP.CreateDefaultSubobject<UPaperFlipbookComponent>(this,TEXT("Projectile Sprite"));
     RootComponent = ProjectileSprite;
@@ -30,8 +30,10 @@ AProjectile::AProjectile(const FObjectInitializer& PCIP) : Super(PCIP)
     ProjectileSprite->SetSimulatePhysics(true);
     
     ProjectileHitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sphere Hitbox"));
-    ProjectileHitbox->SetRelativeScale3D(FVector(0.1f,0.1f,0.1f));
-    ProjectileHitbox->AttachTo(RootComponent);
+    
+    ProjectileHitbox->SetCapsuleRadius(6.0f);
+    ProjectileHitbox->  SetCapsuleRadius(6.0f);
+    ProjectileHitbox->SetupAttachment(RootComponent);
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
     ProjectileMovement->UpdatedComponent = ProjectileSprite;
@@ -41,10 +43,10 @@ AProjectile::AProjectile(const FObjectInitializer& PCIP) : Super(PCIP)
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->SetPlaneConstraintEnabled(true);
     ProjectileMovement->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
+//    ProjectileMovement->Velocity = FVector(1.f,1.f,0.f);
     //ProjectileMovement->ProjectileGravityScale = 0;
 
     InitialLifeSpan = 3.0f;
-    
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 }
@@ -55,13 +57,27 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
     ProjectileMovement->Velocity = -ProjectileMovement->Velocity;
     ProjectileSprite->SetRelativeRotation(FRotator(0.f,0.f,90.f));
+    UE_LOG(LogTemp,Warning,TEXT("Projectile GetActorLocation() : %s"), *GetActorLocation().ToString());
     ProjectileSprite->SetFlipbook(Projectile);
+    ProjectileHitbox->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndHit);
     ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
+    UE_LOG(LogTemp,Warning,TEXT("Projectile Loc : %s"), *GetActorLocation().ToString());
 }
 
 void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
-    UE_LOG(LogTemp, Warning, TEXT("hit"));
+    UE_LOG(LogTemp, Warning, TEXT("Begin"));
+
+   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
+   {
+       ennemy->Hit(this);
+       Destroy();
+   }
+}
+
+void AProjectile::OnEndHit(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex)
+{
+    UE_LOG(LogTemp, Warning, TEXT("End"));
 
    if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
    {

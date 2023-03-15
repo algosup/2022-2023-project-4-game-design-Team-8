@@ -32,6 +32,7 @@ public:
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
+    void OnEndHit(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 20.0f;

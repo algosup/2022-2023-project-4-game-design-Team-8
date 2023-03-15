@@ -14,7 +14,6 @@ AEnnemyBase::AEnnemyBase()
 {
     PrimaryActorTick.bCanEverTick = true;
     //CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
-
     GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
     GetCapsuleComponent()->SetCapsuleRadius(30.0f);
 
