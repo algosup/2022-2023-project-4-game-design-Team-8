@@ -21,7 +21,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 #include "RangedWeapon.h"
-#include "Projectile.h"
+#include "ActorToSpawn.h"
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
 
@@ -233,7 +233,7 @@ void AMyProjectCharacter::OnFire()
 		FActorSpawnParameters ActorSpawnParams;
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-		GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+		GetWorld()->SpawnActor<AActorToSpawn>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	}
 }
 
