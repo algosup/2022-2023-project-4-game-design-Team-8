@@ -32,7 +32,7 @@ AProjectile::AProjectile(const FObjectInitializer& PCIP) : Super(PCIP)
     ProjectileHitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sphere Hitbox"));
     
     ProjectileHitbox->SetCapsuleRadius(6.0f);
-    ProjectileHitbox->  SetCapsuleRadius(6.0f);
+    ProjectileHitbox->SetCapsuleHalfHeight(6.0f);
     ProjectileHitbox->SetupAttachment(RootComponent);
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
@@ -57,17 +57,14 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
     ProjectileMovement->Velocity = -ProjectileMovement->Velocity;
     ProjectileSprite->SetRelativeRotation(FRotator(0.f,0.f,90.f));
-    UE_LOG(LogTemp,Warning,TEXT("Projectile GetActorLocation() : %s"), *GetActorLocation().ToString());
     ProjectileSprite->SetFlipbook(Projectile);
-    ProjectileHitbox->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndHit);
-    ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
-    UE_LOG(LogTemp,Warning,TEXT("Projectile Loc : %s"), *GetActorLocation().ToString());
+    
+    ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnBeginOverlap);:
+    ProjectileHitbox->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndOverlap);
 }
 
-void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+void AProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Begin"));
-
    if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
    {
        ennemy->Hit(this);
@@ -75,10 +72,8 @@ void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherA
    }
 }
 
-void AProjectile::OnEndHit(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex)
+void AProjectile::OnEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex)
 {
-    UE_LOG(LogTemp, Warning, TEXT("End"));
-
    if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
    {
        ennemy->Hit(this);
