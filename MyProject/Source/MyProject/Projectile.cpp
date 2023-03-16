@@ -59,7 +59,7 @@ void AProjectile::BeginPlay()
     ProjectileSprite->SetRelativeRotation(FRotator(0.f,0.f,90.f));
     ProjectileSprite->SetFlipbook(Projectile);
     
-    ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnBeginOverlap);:
+    ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnBeginOverlap);
     ProjectileHitbox->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndOverlap);
 }
 

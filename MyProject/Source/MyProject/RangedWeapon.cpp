@@ -29,30 +29,34 @@ void ARangedWeapon::BeginPlay()
 void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    if (PC)
+    {
+        RotateGun(DeltaTime);
+    }
 }
 
 void ARangedWeapon::OnFire()
 {
-    if(GetWorld() != NULL)
-    {
-        SpawnRotation = GetActorRotation();
+     if(GetWorld() != NULL)
+     {
+         SpawnRotation = GetActorRotation();
         
-        SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
+         SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
         
-        FActorSpawnParameters ActorSpawnParams;
-        ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-        GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
-    }
+         FActorSpawnParameters ActorSpawnParams;
+         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+         GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+     }
 }
 
 void ARangedWeapon::RotateGun(float DeltaTime)
 {
-    FVector playerLoc = GetActorLocation();
-    FHitResult hitResult;
-    PC->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, hitResult);
-    FVector hitLoc = hitResult.Location;
-    float newYaw = (hitLoc - playerLoc).Rotation().Yaw;
-    FRotator newRot = GetActorRotation();
-    newRot.Yaw = newYaw + 180;
-    SetActorRotation(newRot);
+     FVector playerLoc = GetActorLocation();
+     FHitResult hitResult;
+     PC->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, hitResult);
+     FVector hitLoc = hitResult.Location;
+     float newYaw = (hitLoc - playerLoc).Rotation().Yaw;
+     FRotator newRot = GetActorRotation();
+     newRot.Yaw = newYaw + 180;
+     SetActorRotation(newRot);
 }
