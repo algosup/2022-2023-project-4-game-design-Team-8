@@ -29,12 +29,12 @@ void AMyProjectPlayerController::SetupInputComponent()
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AMyProjectPlayerController::OnSetDestinationPressed);
-	InputComponent->BindAction("SetDestination", IE_Released, this, &AMyProjectPlayerController::OnSetDestinationReleased);
+	//InputComponent->BindAction("SetDestination", IE_Pressed, this, &AMyProjectPlayerController::OnSetDestinationPressed);
+	//InputComponent->BindAction("SetDestination", IE_Released, this, &AMyProjectPlayerController::OnSetDestinationReleased);
 
-	// support touch devices 
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AMyProjectPlayerController::MoveToTouchLocation);
-	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AMyProjectPlayerController::MoveToTouchLocation);
+	//// support touch devices 
+	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AMyProjectPlayerController::MoveToTouchLocation);
+	//InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AMyProjectPlayerController::MoveToTouchLocation);
 
 	InputComponent->BindAction("ResetVR", IE_Pressed, this, &AMyProjectPlayerController::OnResetVR);
 }
