@@ -20,7 +20,6 @@ public:
 
 	void SetPC(APlayerController* PlayerController) {
         PC = PlayerController;
-//        UE_LOG(LogTemp,Warning,TEXT("SETPC"));
     };
 
 protected:
@@ -29,7 +28,7 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:	
-	void OnFire();
+	virtual void OnFire();
 	FRotator SpawnRotation;
 	FVector SpawnLocation;
     
@@ -37,21 +36,25 @@ public:
         APlayerController* PC;
 
 
-	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
+        FString WeaponName;
+    
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 		class UPaperFlipbookComponent* GunSprite;
 
-	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 		class UPaperFlipbook* GunMesh;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UPROPERTY(VisibleDefaultsOnly, Category = Weapon)
 		class USceneComponent* MuzzleLocation;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+        FVector GunOffset;
+    
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AActorToSpawn> Projectile;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		FVector GunOffset;
 
-	void RotateGun(float DeltaTime);
-	FRotator GetGunRotation() { return GetActorRotation(); }
+    virtual void RotateGun(float DeltaTime);
+	virtual FRotator GetGunRotation() { return GetActorRotation(); }
 };
