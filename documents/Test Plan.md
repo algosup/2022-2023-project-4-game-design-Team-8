@@ -36,22 +36,22 @@ The following features won't be tested because they are not required for the gam
 
 ## Approach
 
-[insert_flow_chart]
+[Flow_Chart](/documents/)
 
 ## Assumptions
 
 1. The member of the team that is assigned to testing will be present at any point during the project.
-2. 
+2. ...
 
 ## Risks
 
 1. The team member assigned to testing is absent.
-2. 
+2. ...
 
 ## Contingency plan
 
 1. The said team member will make templates for test procedures and will render his work accessible through GitHub to ensure that other team members could take on his work if the need were to rise.
-2. 
+2. ...
 
 ## Schedule
 
