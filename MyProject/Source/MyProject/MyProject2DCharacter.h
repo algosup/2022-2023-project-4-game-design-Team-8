@@ -5,8 +5,9 @@
 #include "CoreMinimal.h"
 #include "EnnemyBase.h"
 #include "PaperCharacter.h"
-#include "RangedWeapon.h"
 #include "MyProject2DCharacter.generated.h"
+
+class UTextRenderComponent;
 
 /**
  * This class is the default character for MyProject, and it is responsible for all
@@ -33,6 +34,7 @@ class AMyProject2DCharacter : public APaperCharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     class UDecalComponent* CursorToWorld;
     
+	UTextRenderComponent* TextComponent;
 	virtual void Tick(float DeltaSeconds) override;
 protected:
 	// The animation to play while running around
@@ -54,9 +56,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
     class UPaperFlipbook* IdleRightAnimation;
     
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
-	class ARangedWeapon* RangedWeapon;
+
 	/** Called to choose the correct animation to play based on the character's movement state */
 	void UpdateAnimation();
 
@@ -79,13 +79,25 @@ protected:
     void OnFire();
 public:
 	AMyProject2DCharacter();
+	
+    UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+        class USkeletalMeshComponent* GunMesh;
+    
+    UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+        class USceneComponent* MuzzleLocation;
+    
+    UPROPERTY(EditDefaultsOnly, Category = Projectile)
+        TSubclassOf<class AActorToSpawn> Projectile;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+        FVector GunOffset;
+
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-
-   
-
+    FRotator SpawnRotation;
+    FVector SpawnLocation;
     void Hit(AEnnemyBase* ennemy);
     FTimerHandle TimerHandler;
 
