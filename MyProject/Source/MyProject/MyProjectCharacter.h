@@ -59,7 +59,7 @@ public:
 		class USceneComponent* MuzzleLocation;
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AActorToSpawn> Projectile;
+		TSubclassOf<class AProjectile> Projectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		class USoundBase* FireSound;

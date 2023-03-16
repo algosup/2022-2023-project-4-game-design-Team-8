@@ -1,20 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 
 #include "EnnemyBase.h"
 #include "MyProject2DCharacter.h"
-#include "ActorToSpawn.h"
+#include "Projectile.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "PaperFlipbookComponent.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 // Sets default values
 AEnnemyBase::AEnnemyBase()
 {
     PrimaryActorTick.bCanEverTick = true;
     //CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
+    GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
+    GetCapsuleComponent()->SetCapsuleRadius(30.0f);
 
-    //CapsuleComp->SetCapsuleHalfHeight(40.0f);
-    //CapsuleComp->SetCapsuleRadius(50.0f);
+    /*GetCharacterMovement()->bConstrainToPlane = true;
+    GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
+    GetSprite()->SetRelativeRotation(FRotator(0.f, 0.f, -90.f));
 }
 // Called when the game starts or when spawned
 void AEnnemyBase::BeginPlay()
@@ -22,8 +27,6 @@ void AEnnemyBase::BeginPlay()
 	Super::BeginPlay();
 
     CapsuleComp = GetCapsuleComponent();
-    //CapsuleComp->SetSimulatePhysics(true);
-//    RootComponent->SetRelativeScale3D(FVector(0.4f,0.4f,0.4f));
     CapsuleComp->OnComponentHit.AddDynamic(this, &AEnnemyBase::OnHit);
 }
 
@@ -42,7 +45,7 @@ void AEnnemyBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
     }
 }
 
-void AEnnemyBase::Hit(AActorToSpawn* projectile)
+void AEnnemyBase::Hit(AProjectile* projectile)
 {
 	DecrementHealth(projectile->DamageValue);
 }
