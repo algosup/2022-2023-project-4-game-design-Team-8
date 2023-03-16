@@ -15,10 +15,7 @@ ARangedWeapon::ARangedWeapon()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
-    
-    GunSprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Gun Sprite"));
-    MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle Location"));
-    MuzzleLocation->SetupAttachment(GunSprite);
+    WeaponName = "Default";
 }
 
 
@@ -26,23 +23,12 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-    GunSprite->SetFlipbook(GunMesh);
-    MuzzleLocation->SetRelativeLocation(FVector(-0.f, 0.f, 0.f));
 }
 
 // Called every frame
 void ARangedWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
-    // Declaration of variables to hold mouse vectors.
-    // Pass by reference to get mouse position in world space and direction vector.
-    if (PC)
-    {
-        RotateGun(DeltaTime);
-    }
-    
 }
 
 void ARangedWeapon::OnFire()
@@ -53,9 +39,6 @@ void ARangedWeapon::OnFire()
         
         SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
         
-        UE_LOG(LogTemp,Warning,TEXT("MuzzleLocation GetRelativeLocation() : %s"), *MuzzleLocation->GetRelativeLocation().ToString());
-        UE_LOG(LogTemp,Warning,TEXT("MuzzleLocation GetComponentLocation() : %s"), *MuzzleLocation->GetComponentLocation().ToString());
-        UE_LOG(LogTemp,Warning,TEXT("SpawnLocation : %s"), *SpawnLocation.ToString());
         FActorSpawnParameters ActorSpawnParams;
         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
         GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
