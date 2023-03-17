@@ -10,8 +10,8 @@ UCLASS()
 class MYPROJECT_API AActorToSpawn : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AActorToSpawn();
 
@@ -19,7 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 		class USphereComponent* SphereComp;
 
