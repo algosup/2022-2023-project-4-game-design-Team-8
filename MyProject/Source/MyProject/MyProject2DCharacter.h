@@ -70,7 +70,8 @@ protected:
 
 	void DecrementHealth(int damage);
 	void Die();
-	float Health = 100.f;
+	float Health;
+    float MaxHealth = 100.f;
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -78,17 +79,22 @@ protected:
 
     void OnFire();
 public:
-	AMyProject2DCharacter();
+	AMyProject2DCharacter(const FObjectInitializer& PCIP);
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-   
+    UPROPERTY (VisibleAnywhere)
+        class UWidgetComponent* HealthWidget;
+    
+    float GetHealth(){ return Health;}
+    float GetMaxHealth(){ return MaxHealth;}
 
     void Hit(AEnnemyBase* ennemy);
     FTimerHandle TimerHandler;
 
+    ARangedWeapon* GetRangedWeapon() { return RangedWeapon;}
 private:
     bool bCanTakeDamage = true;
     void BecomeVulnerable();

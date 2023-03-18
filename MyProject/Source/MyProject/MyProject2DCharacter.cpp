@@ -6,11 +6,13 @@
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
 #include "Projectile.h"
+#include "UserInterface.h"
 
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/WidgetComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -42,16 +44,17 @@ DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
 //////////////////////////////////////////////////////////////////////////
 // AMyProject2DCharacter
 
-AMyProject2DCharacter::AMyProject2DCharacter()
+AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : Super(PCIP)
 {
+    Health = MaxHealth;
 	// Use only Yaw from the controller and ignore the rest of the rotation.
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = true;
 
 	// Set the size of our collision capsule.
-	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
-	GetCapsuleComponent()->SetCapsuleRadius(30.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(28.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(28.0f);
 
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -67,9 +70,10 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
     SideViewCameraComponent->OrthoWidth = 1024.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-    
-    /*RangedWeapon->SetPC(PC);*/
-
+    if (RootComponent == nullptr)
+    {
+        RootComponent = PCIP.CreateDefaultSubobject<USceneComponent>(this,TEXT("Root"));
+    }
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
