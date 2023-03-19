@@ -25,6 +25,6 @@ void UUserInterface::NativeTick (const FGeometry& MyGeometry, float InDeltaTime)
     CurrentHealthLabel->SetText(FText::AsNumber(Owner->GetHealth(), &Opts));
     MaxHealthLabel->SetText(FText::AsNumber(Owner->GetMaxHealth(), &Opts));
     UPaperSprite* spri = Owner->GetRangedWeapon()->GunMesh->GetSpriteAtFrame(0);
-    WeaponImage->SetBrush(UPaperSpriteBlueprintLibrary::MakeBrushFromSprite(spri,200,200));
+//    WeaponImage->SetBrush(UPaperSpriteBlueprintLibrary::MakeBrushFromSprite(spri,200,200));
     
 }
