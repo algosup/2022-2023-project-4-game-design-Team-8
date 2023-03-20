@@ -19,12 +19,10 @@ void UUserInterface::NativeTick (const FGeometry& MyGeometry, float InDeltaTime)
     if(!Owner.IsValid()) return;
     
     HealthBar->SetPercent(Owner->GetHealth() / Owner->GetMaxHealth());
-    
+    PowerBar->SetPercent(Owner->GetPowerBar()/100.f);
     FNumberFormattingOptions Opts;
     Opts.SetMaximumFractionalDigits(0);
     CurrentHealthLabel->SetText(FText::AsNumber(Owner->GetHealth(), &Opts));
     MaxHealthLabel->SetText(FText::AsNumber(Owner->GetMaxHealth(), &Opts));
-    UPaperSprite* spri = Owner->GetRangedWeapon()->GunMesh->GetSpriteAtFrame(0);
-//    WeaponImage->SetBrush(UPaperSpriteBlueprintLibrary::MakeBrushFromSprite(spri,200,200));
-    
+    PlayerWeapon = Owner->GetRangedWeapon()->GunSprite;
 }

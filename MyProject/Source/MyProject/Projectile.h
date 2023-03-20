@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "Projectile.generated.h"
 
+class AMyProject2DCharacter;
 UCLASS()
 class MYPROJECT_API AProjectile : public AActor
 {
@@ -30,11 +32,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = Movement)
 		class UProjectileMovementComponent* ProjectileMovement;
 
-	UFUNCTION()
-		void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
+//	UFUNCTION()
+//		void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
     UFUNCTION()
         void OnEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex);
 
+    FSimpleDelegate IncreasePowerBarDelegate;
     
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 20.0f;

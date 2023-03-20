@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PaperSpriteComponent.h"
+
 #include "PaperFlipbookComponent.h"
 #include "Math/Rotator.h"
 #include "TimerManager.h"
@@ -35,7 +36,7 @@ void ARangedWeapon::Tick(float DeltaTime)
     }
 }
 
-void ARangedWeapon::OnFire()
+void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
 {
      if(GetWorld() != NULL)
      {
@@ -45,7 +46,8 @@ void ARangedWeapon::OnFire()
         
          FActorSpawnParameters ActorSpawnParams;
          ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-         GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+         AProjectile* proj = GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+         proj->IncreasePowerBarDelegate = IncreasePowerBarDelegate;
      }
 }
 

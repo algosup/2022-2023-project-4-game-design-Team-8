@@ -31,7 +31,12 @@ protected:
     UPROPERTY(meta = (BindWidget))
         class UTextBlock* MaxHealthLabel;
     
-    UPROPERTY(meta = (BindWidget))
+    UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
         class UImage* WeaponImage;
     
+    UPROPERTY(BlueprintReadWrite)
+        class UPaperFlipbookComponent* PlayerWeapon;
+    
+    UPROPERTY(meta = (BindWidget))
+        class UProgressBar* PowerBar;
 };
