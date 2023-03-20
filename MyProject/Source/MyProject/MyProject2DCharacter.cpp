@@ -53,8 +53,8 @@ AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : S
 	bUseControllerRotationRoll = true;
 
 	// Set the size of our collision capsule.
-	GetCapsuleComponent()->SetCapsuleHalfHeight(28.0f);
-	GetCapsuleComponent()->SetCapsuleRadius(28.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(13.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(13.0f);
 
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -64,6 +64,7 @@ AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : S
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
     GetSprite()->SetRelativeRotation(FRotator(0.f,0.f,-90.f));
+    GetSprite()->SetRelativeLocation(FVector(0.f,-9.f,0.f));
 
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
@@ -254,4 +255,5 @@ void AMyProject2DCharacter::DecrementHealth(int damage)
 }
 void AMyProject2DCharacter::Die()
 {
+    
 }
