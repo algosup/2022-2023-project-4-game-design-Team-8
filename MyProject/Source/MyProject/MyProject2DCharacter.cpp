@@ -65,7 +65,10 @@ AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : S
 	CameraBoom->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
     GetSprite()->SetRelativeRotation(FRotator(0.f,0.f,-90.f));
     GetSprite()->SetRelativeLocation(FVector(0.f,-9.f,0.f));
-
+    GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
+    GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
+    
+    
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
     SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
@@ -255,5 +258,6 @@ void AMyProject2DCharacter::DecrementHealth(int damage)
 }
 void AMyProject2DCharacter::Die()
 {
-    
+    AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+    GameMode->RestartGame();
 }

@@ -17,7 +17,9 @@ AEnnemyBase::AEnnemyBase()
     //CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
     GetCapsuleComponent()->SetCapsuleHalfHeight(13.0f);
     GetCapsuleComponent()->SetCapsuleRadius(13.0f);
-
+    GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
+    GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
+    
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
     GetSprite()->SetRelativeRotation(FRotator(0.f, 0.f, -90.f));

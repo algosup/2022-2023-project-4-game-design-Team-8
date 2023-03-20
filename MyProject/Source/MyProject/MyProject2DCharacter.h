@@ -36,7 +36,7 @@ class AMyProject2DCharacter : public APaperCharacter
 	virtual void Tick(float DeltaSeconds) override;
 protected:
     float Health;
-    float MaxHealth = 200.f;
+    float MaxHealth = 50.f;
     
     virtual void BeginPlay() override;
 	// The animation to play while running around
