@@ -53,7 +53,7 @@ public:
         FVector GunOffset;
     
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AActorToSpawn> Projectile;
+		TSubclassOf<class AProjectile> Projectile;
 
 
     virtual void RotateGun(float DeltaTime);
