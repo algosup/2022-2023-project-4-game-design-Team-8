@@ -7,8 +7,10 @@
 #include "EnnemyBase.h"
 #include "PaperSpriteComponent.h"
 #include "PaperFlipbookComponent.h"
+
 #include "RangedWeapon.generated.h"
 
+class AMyProject2DCharacter;
 UCLASS()
 class MYPROJECT_API ARangedWeapon : public AActor
 {
@@ -28,13 +30,12 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:	
-	virtual void OnFire();
+	virtual void OnFire(FSimpleDelegate IncreasePowerBarDelegate);
 	FRotator SpawnRotation;
 	FVector SpawnLocation;
     
     UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Controller)
         APlayerController* PC;
-
 
     UPROPERTY(EditDefaultsOnly, Category = Weapon)
         FString WeaponName;

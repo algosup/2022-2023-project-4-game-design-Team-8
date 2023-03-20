@@ -35,61 +35,70 @@ class AMyProject2DCharacter : public APaperCharacter
     
 	virtual void Tick(float DeltaSeconds) override;
 protected:
+    float Health;
+    float MaxHealth = 200.f;
+    
+    virtual void BeginPlay() override;
 	// The animation to play while running around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Animations)
-	class UPaperFlipbook* RunningAnimation;
+        class UPaperFlipbook* RunningAnimation;
 
 	// The animation to play while idle (standing still)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-	class UPaperFlipbook* IdleFrontAnimation;
+        class UPaperFlipbook* IdleFrontAnimation;
     
     // The animation to play while idle (standing still)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-    class UPaperFlipbook* IdleBackAnimation;
+        class UPaperFlipbook* IdleBackAnimation;
     
     // The animation to play while idle (standing still)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-    class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
+        class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-    class UPaperFlipbook* IdleRightAnimation;
+        class UPaperFlipbook* IdleRightAnimation;
     
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;
-	/** Called to choose the correct animation to play based on the character's movement state */
+
+    /** Called to choose the correct animation to play based on the character's movement state */
 	void UpdateAnimation();
 
-	/** Called for side to side input */
-	void MoveRight(float Value);
     
+
+    virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	/** Called for side to side input */
+	virtual void MoveRight(float Value);
     /** Called for side to side input */
-    void MoveUp(float Value);
+    virtual void MoveUp(float Value);
 
-	void UpdateCharacter();
-
-	void DecrementHealth(int damage);
-	void Die();
-	float Health = 100.f;
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	// End of APawn interface
-    virtual void BeginPlay() override;
-
+	virtual void DecrementHealth(int damage);
+	virtual void Die();
+    
+    FSimpleDelegate IncreasePowerBarDelegate;
     void OnFire();
 public:
-	AMyProject2DCharacter();
+	AMyProject2DCharacter(const FObjectInitializer& PCIP);
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+    
+    float GetHealth(){ return Health;}
+    float GetMaxHealth(){ return MaxHealth;}
 
-   
-
-    void Hit(AEnnemyBase* ennemy);
+    virtual void Hit(AEnnemyBase* ennemy);
+    virtual void DecreasePowerBar();
+    virtual void IncreasePowerBar();
+    void Power();
     FTimerHandle TimerHandler;
 
+    float GetPowerBar() { return PowerBar; }
+    ARangedWeapon* GetRangedWeapon() { return RangedWeapon;}
 private:
     bool bCanTakeDamage = true;
     void BecomeVulnerable();
+    float PowerBar = 0.f;
+    
 };

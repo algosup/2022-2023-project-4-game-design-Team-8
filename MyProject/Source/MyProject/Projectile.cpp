@@ -59,24 +59,26 @@ void AProjectile::BeginPlay()
     ProjectileSprite->SetRelativeRotation(FRotator(0.f,0.f,90.f));
     ProjectileSprite->SetFlipbook(Projectile);
     
-    ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnBeginOverlap);
+//    ProjectileHitbox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnBeginOverlap);
     ProjectileHitbox->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnEndOverlap);
 }
 
-void AProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
-{
-   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
-   {
-       ennemy->Hit(this);
-       Destroy();
-   }
-}
+//void AProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+//{
+//   if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
+//   {
+//       ennemy->Hit(this);
+//       IncreasePowerBarDelegate.Execute();
+//       Destroy();
+//   }
+//}
 
 void AProjectile::OnEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex)
 {
    if(AEnnemyBase* ennemy = Cast<AEnnemyBase>(OtherActor))
    {
        ennemy->Hit(this);
+       IncreasePowerBarDelegate.Execute();
        Destroy();
    }
 }

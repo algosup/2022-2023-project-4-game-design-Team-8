@@ -12,6 +12,7 @@
 // Sets default values
 AEnnemyBase::AEnnemyBase()
 {
+    Health = MaxHealth;
     PrimaryActorTick.bCanEverTick = true;
     //CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
 

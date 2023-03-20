@@ -5,12 +5,14 @@
 #include "RangedWeapon.h"
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
-#include "ActorToSpawn.h"
+#include "Projectile.h"
+#include "UserInterface.h"
 
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/WidgetComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -42,16 +44,17 @@ DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
 //////////////////////////////////////////////////////////////////////////
 // AMyProject2DCharacter
 
-AMyProject2DCharacter::AMyProject2DCharacter()
+AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : Super(PCIP)
 {
+    Health = MaxHealth;
 	// Use only Yaw from the controller and ignore the rest of the rotation.
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = true;
 
 	// Set the size of our collision capsule.
-	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
-	GetCapsuleComponent()->SetCapsuleRadius(20.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(28.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(28.0f);
 
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -67,9 +70,10 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
     SideViewCameraComponent->OrthoWidth = 1024.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-    
-    /*RangedWeapon->SetPC(PC);*/
-
+    if (RootComponent == nullptr)
+    {
+        RootComponent = PCIP.CreateDefaultSubobject<USceneComponent>(this,TEXT("Root"));
+    }
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
@@ -95,13 +99,13 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 void AMyProject2DCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    IncreasePowerBarDelegate.BindUObject(this,&AMyProject2DCharacter::IncreasePowerBar);
     if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
     {
         RangedWeapon = Weapon;
         RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
         RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
         RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
-        RangedWeapon->SetActorScale3D(FVector(2.5f,2.5f,2.5f));
         APlayerController* PC = Cast<APlayerController>(GetController());
         RangedWeapon->SetPC(PC);
     }
@@ -135,8 +139,6 @@ void AMyProject2DCharacter::UpdateAnimation()
 void AMyProject2DCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	UpdateCharacter();
     
     if (CursorToWorld != nullptr)
     {
@@ -167,13 +169,12 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
     
     // Update animation to match the motion
     UpdateAnimation();
-    
-    
+    if(PowerBar==100.f) Power();
 }
 
 void AMyProject2DCharacter::OnFire()
 {
-    RangedWeapon->OnFire();
+    RangedWeapon->OnFire(IncreasePowerBarDelegate);
 }
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -205,9 +206,6 @@ void AMyProject2DCharacter::MoveUp(float Value)
     AddMovementInput(FVector(0.0f, 1.0f, 0.0f), Value);
 }
 
-void AMyProject2DCharacter::UpdateCharacter()
-{
-}
 
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
@@ -218,6 +216,7 @@ void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
         if(GI)
         {
             DecrementHealth(ennemy->DamageValue);
+            DecreasePowerBar();
             bCanTakeDamage = false;
             if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
             {
@@ -225,6 +224,19 @@ void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
             }
         }
     }
+}
+
+void AMyProject2DCharacter::DecreasePowerBar()
+{
+    PowerBar = PowerBar >= 10.f ? PowerBar - 10.f : 0.f;
+}
+void AMyProject2DCharacter::IncreasePowerBar()
+{
+    PowerBar = PowerBar < 100.f ? PowerBar += 1.f : 100.f;
+}
+
+void AMyProject2DCharacter::Power()
+{
 }
 
 void AMyProject2DCharacter::BecomeVulnerable()
@@ -235,7 +247,6 @@ void AMyProject2DCharacter::BecomeVulnerable()
 void AMyProject2DCharacter::DecrementHealth(int damage)
 {
     Health -= damage;
-    UE_LOG(LogTemp, Warning, TEXT("health : %.0f"), Health);
     if (Health <= 0.f)
     {
         Die();

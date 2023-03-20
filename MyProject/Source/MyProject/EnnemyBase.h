@@ -48,10 +48,14 @@ public:
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 10.0f;
+    
+    float GetHealth(){ return Health;}
+    float GetMaxHealth(){ return MaxHealth;}
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
     void DecrementHealth(int damage);
     void Die();
-    float Health = 100.f;
+    float Health;
+    float MaxHealth = 100.f;
 };
