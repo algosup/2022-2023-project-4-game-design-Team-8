@@ -18,23 +18,26 @@ class MYPROJECT_API ARangedWeapon : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	ARangedWeapon();	 
-
-	void SetPC(APlayerController* PlayerController) {
-        PC = PlayerController;
-    };
-
+	ARangedWeapon();
+private:
+    bool bCanShoot = true;
+    APlayerController* PC;
+    
+    float WeaponDamage = 0.f;
+    float WeaponFireRate = 0.f;
+    
+    virtual void RotateGun(float DeltaTime);
+    virtual void AllowShoot();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-
-public:	
-	virtual void OnFire(FSimpleDelegate IncreasePowerBarDelegate);
-	FRotator SpawnRotation;
-	FVector SpawnLocation;
-    
-    APlayerController* PC;
+    FTimerHandle TimerHandler;
+public:
+    void SetPC(APlayerController* PlayerController) {
+        PC = PlayerController;
+    };
+	virtual void OnFire(FSimpleDelegate IncreasePowerBarDelegate, float PlayerDamage, float PlayerFireRate);
 
     UPROPERTY(EditDefaultsOnly, Category = Weapon)
         FString WeaponName;
@@ -54,7 +57,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AProjectile> Projectile;
 
-
-    virtual void RotateGun(float DeltaTime);
 	virtual FRotator GetGunRotation() { return GetActorRotation(); }
 };

@@ -34,11 +34,21 @@ class AMyProject2DCharacter : public APaperCharacter
     class UDecalComponent* CursorToWorld;
     
 	virtual void Tick(float DeltaSeconds) override;
+private:
+    bool bCanTakeDamage = true;
+    void BecomeVulnerable();
+    float PowerBar = 0.f;
+    FTimerHandle TimerHandler;
+
+    float PlayerSpeed = 10.f;
+    float PlayerDamage = 5.f;
+    float PlayerFireRate = 1.f;
+    float MaxHealth = 10.f;
+    float Health = MaxHealth;
+    bool bIsFiring = false;
 protected:
-    float Health;
-    float MaxHealth = 50.f;
+    FSimpleDelegate IncreasePowerBarDelegate;
     
-    virtual void BeginPlay() override;
 	// The animation to play while running around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Animations)
         class UPaperFlipbook* RunningAnimation;
@@ -62,43 +72,35 @@ protected:
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;
 
+   
     /** Called to choose the correct animation to play based on the character's movement state */
-	void UpdateAnimation();
-
+	virtual void UpdateAnimation();
     
-
+    virtual void BeginPlay() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	/** Called for side to side input */
-	virtual void MoveRight(float Value);
-    /** Called for side to side input */
-    virtual void MoveUp(float Value);
 
+	virtual void MoveRight(float Value);
+    virtual void MoveUp(float Value);
+    
+    virtual void StartFire();
+    virtual void StopFire();
+    virtual void Fire();
+    
 	virtual void DecrementHealth(int damage);
 	virtual void Die();
-    
-    FSimpleDelegate IncreasePowerBarDelegate;
-    void OnFire();
 public:
-	AMyProject2DCharacter(const FObjectInitializer& PCIP);
-	/** Returns SideViewCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	AMyProject2DCharacter();
     
+	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+    ARangedWeapon* GetRangedWeapon() { return RangedWeapon; }
     float GetHealth(){ return Health;}
     float GetMaxHealth(){ return MaxHealth;}
-
+    float GetPowerBar() { return PowerBar; }
+        
+    virtual void Power();
+    
     virtual void Hit(AEnnemyBase* ennemy);
     virtual void DecreasePowerBar();
     virtual void IncreasePowerBar();
-    void Power();
-    FTimerHandle TimerHandler;
-
-    float GetPowerBar() { return PowerBar; }
-    ARangedWeapon* GetRangedWeapon() { return RangedWeapon;}
-private:
-    bool bCanTakeDamage = true;
-    void BecomeVulnerable();
-    float PowerBar = 0.f;
-    
 };

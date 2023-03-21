@@ -40,5 +40,5 @@ public:
     FSimpleDelegate IncreasePowerBarDelegate;
     
 	UPROPERTY(EditAnywhere)
-		float DamageValue = 20.0f;
+		float DamageValue;
 };

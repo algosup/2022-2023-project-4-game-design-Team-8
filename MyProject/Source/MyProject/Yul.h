@@ -14,4 +14,21 @@ class MYPROJECT_API AYul : public AMyProject2DCharacter
 {
 	GENERATED_BODY()
 	
+private:
+    float PlayerSpeed;
+    float PlayerDamage;
+    float PlayerFireRate;
+    float MaxHealth;
+    float Health;
+    
+    bool bIsFiring = false;
+    bool bCanTakeDamage = true;
+    void BecomeVulnerable();
+    float PowerBar;
+    FTimerHandle TimerHandler;
+public:
+    AYul();
+public:
+    void DecreasePowerBar() override;
+    void IncreasePowerBar() override;
 };
