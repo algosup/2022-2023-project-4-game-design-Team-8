@@ -28,7 +28,7 @@ AEnnemyBase::AEnnemyBase()
 // Called when the game starts or when spawned
 void AEnnemyBase::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     CapsuleComp = GetCapsuleComponent();
     CapsuleComp->OnComponentHit.AddDynamic(this, &AEnnemyBase::OnHit);
@@ -51,7 +51,7 @@ void AEnnemyBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 
 void AEnnemyBase::Hit(AProjectile* projectile)
 {
-	DecrementHealth(projectile->DamageValue);
+    DecrementHealth(projectile->DamageValue);
 }
 
 

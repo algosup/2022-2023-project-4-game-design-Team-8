@@ -12,13 +12,13 @@ class AMyProject2DCharacter;
 UCLASS()
 class MYPROJECT_API AEnnemyBase : public APaperCharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	AEnnemyBase();
+    // Sets default values for this character's properties
+    AEnnemyBase();
 
-	virtual void Tick(float DeltaTime) override;
+    virtual void Tick(float DeltaTime) override;
 
     void Hit(AProjectile* projectile);
 //    void Hit(MeleeWeapon* projectile);
@@ -28,17 +28,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 		class UPaperFlipbook* RunningAnimation;
 
-	// The animation to play while idle (standing still)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-		class UPaperFlipbook* IdleFrontAnimation;
+    // The animation to play while idle (standing still)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* IdleBackAnimation;
 
-	// The animation to play while idle (standing still)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-		class UPaperFlipbook* IdleBackAnimation;
+    // The animation to play while idle (standing still)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
 
-	// The animation to play while idle (standing still)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-		class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* IdleRightAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 		class UPaperFlipbook* IdleRightAnimation;
@@ -51,8 +50,8 @@ public:
     float GetHealth(){ return Health;}
     float GetMaxHealth(){ return MaxHealth;}
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
     void DecrementHealth(int damage);
     void Die();
     float Health;
