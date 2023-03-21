@@ -44,7 +44,7 @@ DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
 //////////////////////////////////////////////////////////////////////////
 // AMyProject2DCharacter
 
-AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : Super(PCIP)
+AMyProject2DCharacter::AMyProject2DCharacter()
 {
     Health = MaxHealth;
 	// Use only Yaw from the controller and ignore the rest of the rotation.
@@ -74,27 +74,13 @@ AMyProject2DCharacter::AMyProject2DCharacter(const FObjectInitializer& PCIP) : S
     SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
     SideViewCameraComponent->OrthoWidth = 1024.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-    if (RootComponent == nullptr)
-    {
-        RootComponent = PCIP.CreateDefaultSubobject<USceneComponent>(this,TEXT("Root"));
-    }
+    
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
-	GetCharacterMovement()->MaxFlySpeed = 600.0f;
     GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
-
-    CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
-    CursorToWorld->SetupAttachment(RootComponent);
-    static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
-    if (DecalMaterialAsset.Succeeded())
-    {
-        CursorToWorld->SetDecalMaterial(DecalMaterialAsset.Object);
-    }
-    CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
-    CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
     // Activate ticking in order to update the cursor every frame.
     PrimaryActorTick.bCanEverTick = true;
@@ -124,12 +110,12 @@ void AMyProject2DCharacter::UpdateAnimation()
     UPaperFlipbook* DesiredAnimation;
     
     float GunRotation = RangedWeapon->GetGunRotation().GetComponentForAxis(EAxis::Z);
-    if (GunRotation < 90.f && GunRotation > -90.f)
-    {
-        DesiredAnimation = IdleFrontAnimation;
-    }else
+    if (GunRotation <= 0.f)
     {
         DesiredAnimation = IdleBackAnimation;
+    }else
+    {
+        DesiredAnimation = IdleFrontAnimation;
     }
 	// Are we moving or standing still?
 //	UPaperFlipbook* DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleFrontAnimation;
@@ -143,42 +129,13 @@ void AMyProject2DCharacter::UpdateAnimation()
 void AMyProject2DCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-    
-    if (CursorToWorld != nullptr)
+    if (bIsFiring)
     {
-        if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-        {
-            if (UWorld* World = GetWorld())
-            {
-                FHitResult HitResult;
-                FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
-                FVector StartLocation = SideViewCameraComponent->GetComponentLocation();
-                FVector EndLocation = SideViewCameraComponent->GetComponentRotation().Vector() * 2000.0f;
-                Params.AddIgnoredActor(this);
-                World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
-                FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
-                CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
-            }
-        }
-        else if (APlayerController* PC = Cast<APlayerController>(GetController()))
-        {
-            FHitResult TraceHitResult;
-            PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
-            FVector CursorFV = TraceHitResult.ImpactNormal;
-            FRotator CursorR = CursorFV.Rotation();
-            CursorToWorld->SetWorldLocation(TraceHitResult.Location);
-            CursorToWorld->SetWorldRotation(CursorR);
-        }
+        Fire();
     }
     
     // Update animation to match the motion
     UpdateAnimation();
-    if(PowerBar==100.f) Power();
-}
-
-void AMyProject2DCharacter::OnFire()
-{
-    RangedWeapon->OnFire(IncreasePowerBarDelegate);
 }
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -190,7 +147,8 @@ void AMyProject2DCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
     PlayerInputComponent->BindAxis("MoveUp", this, &AMyProject2DCharacter::MoveUp);
     
     
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyProject2DCharacter::OnFire);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyProject2DCharacter::StartFire);
+    PlayerInputComponent->BindAction("Fire", IE_Released, this, &AMyProject2DCharacter::StopFire);
 
 }
 
@@ -211,6 +169,18 @@ void AMyProject2DCharacter::MoveUp(float Value)
 }
 
 
+void AMyProject2DCharacter::StartFire()
+{
+    bIsFiring = true;
+}
+void AMyProject2DCharacter::StopFire()
+{
+    bIsFiring = false;
+}
+void AMyProject2DCharacter::Fire()
+{
+    RangedWeapon->OnFire(IncreasePowerBarDelegate, PlayerDamage, PlayerFireRate);
+}
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 {
@@ -237,6 +207,7 @@ void AMyProject2DCharacter::DecreasePowerBar()
 void AMyProject2DCharacter::IncreasePowerBar()
 {
     PowerBar = PowerBar < 100.f ? PowerBar += 1.f : 100.f;
+    UE_LOG(LogTemp,Warning,TEXT("PowerBar : %.2f"), PowerBar);
 }
 
 void AMyProject2DCharacter::Power()

@@ -15,15 +15,15 @@ AEnnemyBase::AEnnemyBase()
     Health = MaxHealth;
     PrimaryActorTick.bCanEverTick = true;
     //CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Character Mesh"));
-    GetCapsuleComponent()->SetCapsuleHalfHeight(13.0f);
-    GetCapsuleComponent()->SetCapsuleRadius(13.0f);
+    GetCapsuleComponent()->SetCapsuleHalfHeight(28.0f);
+    GetCapsuleComponent()->SetCapsuleRadius(28.0f);
     GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
     GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
     
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
     GetSprite()->SetRelativeRotation(FRotator(0.f, 0.f, -90.f));
-    GetSprite()->SetRelativeLocation(FVector(0.f,-9.f,0.f));
+//    GetSprite()->SetRelativeLocation(FVector(0.f,-9.f,0.f));
 }
 // Called when the game starts or when spawned
 void AEnnemyBase::BeginPlay()

@@ -36,19 +36,32 @@ void ARangedWeapon::Tick(float DeltaTime)
     }
 }
 
-void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
+void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate, float PlayerDamage, float PlayerFireRate)
 {
-     if(GetWorld() != NULL)
+     if(GetWorld() != NULL && bCanShoot)
      {
-         SpawnRotation = GetActorRotation();
+         FRotator SpawnRotation = GetActorRotation();
         
-         SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
+         FVector SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
         
          FActorSpawnParameters ActorSpawnParams;
          ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
          AProjectile* proj = GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
          proj->IncreasePowerBarDelegate = IncreasePowerBarDelegate;
+         proj->DamageValue = WeaponDamage + PlayerDamage;
+         bCanShoot = false;
+         float WaitTimer = 1.f/(WeaponFireRate+PlayerFireRate);
+         UE_LOG(LogTemp,Warning,TEXT("WaitTime : %.2f"), WaitTimer);
+         if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+         {
+             GetWorldTimerManager().SetTimer(TimerHandler, this, &ARangedWeapon::AllowShoot,WaitTimer,false);
+         }
      }
+}
+
+void ARangedWeapon::AllowShoot()
+{
+    bCanShoot = true;
 }
 
 void ARangedWeapon::RotateGun(float DeltaTime)
