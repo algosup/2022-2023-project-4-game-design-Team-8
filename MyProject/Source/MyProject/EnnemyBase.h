@@ -40,7 +40,7 @@ public:
         class UPaperFlipbook* IdleRightAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-		class UPaperFlipbook* IdleRightAnimation;
+		class UPaperFlipbook* IdleFrontAnimation;
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
