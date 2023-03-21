@@ -36,7 +36,9 @@ The following features won't be tested because they are not required for the gam
 
 ## Approach
 
-[Flow_Chart](/documents/)
+Flow Chart
+
+![Flow_Chart](/documents/Images/Flow_Chart.png)
 
 ## Assumptions
 
@@ -68,12 +70,12 @@ All bugs found will be saved and repertoriated in a database to facilitate the p
 <b>Software:</b>
 | | |
 | - | - |
-| OS | <span style="color:white"><b>Windows</b></span> |
+| OS | <span style="color:white"><b>macOS Ventura 13.2</b></span> |
 
 <b>Hardware:</b>
 | | |
 | - | - |
-| Processor | <span style="color:white"><b></b></span> |
-| RAM | <span style="color:white"><b></b></span> |
-| GPU | <span style="color:white"><b></b></span> |
+| Processor | <span style="color:white"><b>Apple M1</b></span> |
+| RAM | <span style="color:white"><b>8 GB</b></span> |
+| GPU | <span style="color:white"><b>None</b></span> |
 
