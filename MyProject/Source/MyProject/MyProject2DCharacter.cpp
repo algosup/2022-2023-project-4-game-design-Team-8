@@ -81,7 +81,8 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
-
+    IncreasePowerBarDelegate.BindUObject(this,&AMyProject2DCharacter::IncreasePowerBar);
+    
     // Activate ticking in order to update the cursor every frame.
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.bStartWithTickEnabled = true;
@@ -89,7 +90,6 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 void AMyProject2DCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    IncreasePowerBarDelegate.BindUObject(this,&AMyProject2DCharacter::IncreasePowerBar);
     if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
     {
         RangedWeapon = Weapon;

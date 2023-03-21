@@ -51,7 +51,6 @@ void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate, float Playe
          proj->DamageValue = WeaponDamage + PlayerDamage;
          bCanShoot = false;
          float WaitTimer = 1.f/(WeaponFireRate+PlayerFireRate);
-         UE_LOG(LogTemp,Warning,TEXT("WaitTime : %.2f"), WaitTimer);
          if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
          {
              GetWorldTimerManager().SetTimer(TimerHandler, this, &ARangedWeapon::AllowShoot,WaitTimer,false);

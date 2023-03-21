@@ -72,21 +72,22 @@ protected:
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;
 
-    virtual void BeginPlay() override;
+   
     /** Called to choose the correct animation to play based on the character's movement state */
 	virtual void UpdateAnimation();
-
+    
+    virtual void BeginPlay() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	virtual void MoveRight(float Value);
     virtual void MoveUp(float Value);
-
-	virtual void DecrementHealth(int damage);
-	virtual void Die();
     
     virtual void StartFire();
     virtual void StopFire();
     virtual void Fire();
+    
+	virtual void DecrementHealth(int damage);
+	virtual void Die();
 public:
 	AMyProject2DCharacter();
     

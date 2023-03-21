@@ -15,10 +15,12 @@ AMyProjectGameMode::AMyProjectGameMode()
 
 	// set default pawn class to our Blueprinted character
 //	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/TopDownCharacter"));
-    static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/Yul"));
+    static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/BP_Yul"));
+    UE_LOG(LogTemp,Warning,TEXT("gamemode before if"));
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+        UE_LOG(LogTemp,Warning,TEXT("gamemode after  if"));
 	}
 }
 
