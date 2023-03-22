@@ -99,6 +99,8 @@ public:
     float GetPowerBar() { return PowerBar; }
         
     virtual void Power();
+
+    void UnPower();
     
     virtual void Hit(AEnnemyBase* ennemy);
     virtual void DecreasePowerBar();
