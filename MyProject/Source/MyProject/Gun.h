@@ -10,19 +10,19 @@
  class MYPROJECT_API AGun : public ARangedWeapon
  {
      GENERATED_BODY()
-    
+
+ private:
+     bool bCanShoot = true;
+     float WeaponDamage = 30.f;
+     float WeaponFireRate = 1.f;
  public:
      // Sets default values for this actor's properties
      AGun();
-
+     void OnFire(FSimpleDelegate IncreasePowerBarDelegate, float PlayerDamage, float PlayerFireRate);
 
  protected:
      // Called when the game starts or when spawned
      virtual void BeginPlay() override;
- //    virtual void Tick(float DeltaSeconds) override;
+     virtual void AllowShoot() override;
 
- public:
- //    virtual void OnFire() override;
- //    void RotateGun(float DeltaTime) ;
- //    FRotator GetGunRotation() { return GetActorRotation(); }
  };

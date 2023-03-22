@@ -29,3 +29,31 @@
       GunSprite->SetFlipbook(GunMesh);
       MuzzleLocation->SetRelativeLocation(FVector(-0.f, 0.f, 0.f));
  }
+
+ void AGun::OnFire(FSimpleDelegate IncreasePowerBarDelegate, float PlayerDamage, float PlayerFireRate)
+ {
+     if (GetWorld() != NULL && bCanShoot)
+     {
+         FRotator SpawnRotation = GetActorRotation();
+
+         FVector SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+
+         FActorSpawnParameters ActorSpawnParams;
+         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+         AProjectile* proj = GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+         proj->IncreasePowerBarDelegate = IncreasePowerBarDelegate;
+         proj->DamageValue = WeaponDamage + PlayerDamage;
+         bCanShoot = false;
+         float WaitTimer = 1.f / (WeaponFireRate + PlayerFireRate);
+         if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+         {
+             GetWorldTimerManager().SetTimer(TimerHandler, this, &AGun::AllowShoot, WaitTimer, false);
+         }
+     }
+ }
+
+
+ void AGun::AllowShoot()
+ {
+     bCanShoot = true;
+ }

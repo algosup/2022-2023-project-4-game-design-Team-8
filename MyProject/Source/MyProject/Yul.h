@@ -23,7 +23,7 @@ private:
     
     bool bIsFiring = false;
     bool bCanTakeDamage = true;
-    void BecomeVulnerable();
+    void BecomeVulnerable() override;
     float PowerBar;
     FTimerHandle TimerHandler;
 public:
@@ -31,4 +31,10 @@ public:
 public:
     void DecreasePowerBar() override;
     void IncreasePowerBar() override;
+
+
+    virtual void DecrementHealth(int damage) override;
+    virtual void Die() override;
+
+    virtual void Hit(AEnnemyBase* ennemy) override;
 };

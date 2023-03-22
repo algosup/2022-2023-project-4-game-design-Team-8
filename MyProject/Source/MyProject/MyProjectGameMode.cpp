@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "MyProject2DCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h" 
 
 AMyProjectGameMode::AMyProjectGameMode()
 {
@@ -14,14 +15,17 @@ AMyProjectGameMode::AMyProjectGameMode()
 
 
 	// set default pawn class to our Blueprinted character
-//	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/TopDownCharacter"));
-    static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/BP_Yul"));
-    UE_LOG(LogTemp,Warning,TEXT("gamemode before if"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/2DCharacter"));
+    //static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/BP_Yul"));
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
-        UE_LOG(LogTemp,Warning,TEXT("gamemode after  if"));
 	}
+    static ConstructorHelpers::FObjectFinder<USoundCue> Cue(TEXT("SoundCue'/Game/2DSideScroller/Test.Test'"));
+    if (Cue.Object != nullptr)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
+    }
 }
 
 
