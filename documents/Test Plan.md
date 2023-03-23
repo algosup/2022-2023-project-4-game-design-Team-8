@@ -14,7 +14,7 @@ As all video game the main goal of the application is to entertain the user / pl
 
 The following features will be tested:
 - Player
-    - Player Moving using ZQSD
+    - Player Moving using Z-Q-S-D
     - Player Looking at the cursor
     - Ability system
 - Fight System
@@ -27,7 +27,6 @@ The following features will be tested:
 ### Features not to be tested
 
 The following features won't be tested because they are not required for the game to function properly and are not part of the main gameplay loop.
-- Player
 - Fight System
     - Player can block and/or deflect incomming projectiles 
 - Environment
@@ -52,7 +51,7 @@ Flow Chart
 
 ## Contingency plan
 
-1. The said team member will make templates for test procedures and will render his work accessible through GitHub to ensure that other team members could take on his work if the need were to rise.
+1. The team member assigned to testing will make templates for test procedures and will render his work accessible through GitHub to ensure that other team members could take on his work if the need were to rise.
 2. ...
 
 ## Schedule
@@ -61,16 +60,19 @@ After each new version of the game tests will be conducted to ensure the newly i
 
 ## Defect Tracking
 
-All bugs found will be saved and repertoriated in a database to facilitate the process of following which bugs are still currently in the game, what they exactly do and how to reproduce them.
+All bugs found will be saved and repertoriated in a database to facilitate the process of following which bugs are still currently in the game, what they exactly do and how to reproduce them. Each bug is defined by:
+- A unique ID
+- A description (what it does)
+- The version of the game in which the bug is
+- The date at which it as been discovered
+- How to reproduce the bug
+- The severity of the bug
+- The state of the bug [Resolved, Not Resolved, Being Worked On]
+- The date at which the bug as been resolved
 
 [Bug Database](https://docs.google.com/spreadsheets/d/1uPonp1SBknfaEw47wkt7-kWAfdo2WUsXSYAGhkuUQrc/edit?usp=sharing)
 
 ## Test Environment
-
-<b>Software:</b>
-| | |
-| - | - |
-| OS | <span style="color:white"><b>macOS Ventura 13.2</b></span> |
 
 <b>Hardware:</b>
 | | |
@@ -79,3 +81,7 @@ All bugs found will be saved and repertoriated in a database to facilitate the p
 | RAM | <span style="color:white"><b>8 GB</b></span> |
 | GPU | <span style="color:white"><b>None</b></span> |
 
+<b>Software:</b>
+| | |
+| - | - |
+| OS | <span style="color:white"><b>macOS Ventura 13.2</b></span> |
