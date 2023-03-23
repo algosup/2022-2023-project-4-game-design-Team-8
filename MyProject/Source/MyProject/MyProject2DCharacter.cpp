@@ -202,15 +202,24 @@ void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 
 void AMyProject2DCharacter::DecreasePowerBar()
 {
+    if (PowerBar == 100.f) UnPower();
     PowerBar = PowerBar >= 10.f ? PowerBar - 10.f : 0.f;
 }
 void AMyProject2DCharacter::IncreasePowerBar()
 {
-    PowerBar = PowerBar < 100.f ? PowerBar += 1.f : 100.f;
+    PowerBar = PowerBar < 100.f ? PowerBar += 5.f : 100.f;
+    if (PowerBar == 100.f) Power();
 }
 
 void AMyProject2DCharacter::Power()
 {
+    if(PlayerFireRate != 5.f)
+    PlayerFireRate += 4.f;
+}
+void AMyProject2DCharacter::UnPower()
+{
+    if (PlayerFireRate != 1.f)
+    PlayerFireRate -= 4.f;
 }
 
 void AMyProject2DCharacter::BecomeVulnerable()

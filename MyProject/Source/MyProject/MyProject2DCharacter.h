@@ -36,14 +36,14 @@ class AMyProject2DCharacter : public APaperCharacter
 	virtual void Tick(float DeltaSeconds) override;
 private:
     bool bCanTakeDamage = true;
-    void BecomeVulnerable();
+    virtual void BecomeVulnerable();
     float PowerBar = 0.f;
     FTimerHandle TimerHandler;
 
     float PlayerSpeed = 10.f;
     float PlayerDamage = 5.f;
     float PlayerFireRate = 1.f;
-    float MaxHealth = 10.f;
+    float MaxHealth = 50.f;
     float Health = MaxHealth;
     bool bIsFiring = false;
 protected:
@@ -99,6 +99,8 @@ public:
     float GetPowerBar() { return PowerBar; }
         
     virtual void Power();
+
+    void UnPower();
     
     virtual void Hit(AEnnemyBase* ennemy);
     virtual void DecreasePowerBar();

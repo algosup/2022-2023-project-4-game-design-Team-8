@@ -19,8 +19,12 @@ protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;
     
+    FTimerHandle TimerHandler;
     UPROPERTY(EditAnywhere,Category = Runtime)
     class UUserInterface* UserInterface;
     
+    TSubclassOf<class AEnnemyBase> Ennemy;
+
+    void SpawnEnnemies();
     virtual void BeginPlay() override;
 };
