@@ -110,7 +110,7 @@ void AMyProject2DCharacter::UpdateAnimation()
     UPaperFlipbook* DesiredAnimation;
     
     float GunRotation = RangedWeapon->GetGunRotation().GetComponentForAxis(EAxis::Z);
-    if (GunRotation <= 0.f)
+    if (GunRotation >= 0.f)
     {
         DesiredAnimation = IdleBackAnimation;
     }else
@@ -149,6 +149,7 @@ void AMyProject2DCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
     
     PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyProject2DCharacter::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, this, &AMyProject2DCharacter::StopFire);
+    PlayerInputComponent->BindAction("Restart", IE_Released, this, &AMyProject2DCharacter::Die);
 
 }
 
