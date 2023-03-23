@@ -61,5 +61,5 @@ void AMyProjectGameMode::SpawnEnnemies()
 {
     FActorSpawnParameters ActorSpawnParams;
     ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-    AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,FVector(-716.f,-545.f,160.f),FRotator(0.f,0.f,0.f), ActorSpawnParams);
+    AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,FVector(-700.f,-1192.f,160.f),FRotator(0.f,0.f,0.f), ActorSpawnParams);
 }
