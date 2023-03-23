@@ -77,7 +77,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
     GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
