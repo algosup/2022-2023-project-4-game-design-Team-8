@@ -34,6 +34,11 @@
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
 
+#include "PaperTileMapActor.h"
+#include "PaperTileMapComponent.h"
+#include "PaperTileLayer.h"
+#include "PaperTileMap.h"
+
 #include "Math/Axis.h" 
 #include "Engine/World.h"
 
@@ -69,6 +74,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
     
     
+    
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
     SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
@@ -99,9 +105,47 @@ void AMyProject2DCharacter::BeginPlay()
         APlayerController* PC = Cast<APlayerController>(GetController());
         RangedWeapon->SetPC(PC);
     }
+    GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AMyProject2DCharacter::OnHit);
+}
+void AMyProject2DCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    if (bIsFiring)
+    {
+        Fire();
+    }
+    
+    // Update animation to match the motion
+    UpdateAnimation();
 }
 //////////////////////////////////////////////////////////////////////////
 // Animation
+
+void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    if (APaperTileMapActor* Tile = Cast<APaperTileMapActor>(OtherActor))
+    {
+//        Tile->GetRenderComponent()->GetTile(this);
+        int TileX = 0;
+        int TileY = 0;
+        int Height = 0;
+        int Width = 0;
+        int NumLayers = 0;
+        FVector TilePos = GetActorLocation();
+        TilePos.Z = -TilePos.Y;
+        Tile->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(TilePos,TileX,TileY);
+        Tile->GetRenderComponent()->GetMapSize(Width,Height,NumLayers);
+        FPaperTileInfo* TileInfo = new FPaperTileInfo();
+        TileInfo->TileSet = Tile->GetRenderComponent()->GetTile(TileX,TileY,7).TileSet;//NumLayers-2);
+        TileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(TileX,TileY,7).PackedTileIndex;//NumLayers-2);
+        
+        UE_LOG(LogTemp,Warning,TEXT("TileInfo.PackedTileIndex %d"),TileInfo->PackedTileIndex);
+        UE_LOG(LogTemp,Warning,TEXT("Tile->GetRenderComponent().OwnsTileMap %s"),Tile->GetRenderComponent()->OwnsTileMap() ? TEXT("True"): TEXT("False"));
+        TileInfo->PackedTileIndex += 1;
+        Tile->GetRenderComponent()->SetTile(TileX,TileY,7,*TileInfo);
+        UE_LOG(LogTemp,Warning,TEXT("PAPERTILEMAP, X%d, Y%d NumLayers %d %d"),TileX,TileY,NumLayers, TileInfo->PackedTileIndex);
+    }
+}
 
 void AMyProject2DCharacter::UpdateAnimation()
 {
@@ -126,17 +170,6 @@ void AMyProject2DCharacter::UpdateAnimation()
 	}
 }
 
-void AMyProject2DCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-    if (bIsFiring)
-    {
-        Fire();
-    }
-    
-    // Update animation to match the motion
-    UpdateAnimation();
-}
 //////////////////////////////////////////////////////////////////////////
 // Input
 

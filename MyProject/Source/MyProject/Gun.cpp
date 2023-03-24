@@ -11,6 +11,7 @@
 #include "Components/SceneComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
  AGun::AGun()
  {
 //      Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -27,7 +28,6 @@
  {
       Super::BeginPlay();
       GunSprite->SetFlipbook(GunMesh);
-      MuzzleLocation->SetRelativeLocation(FVector(-0.f, 0.f, 0.f));
  }
 
  void AGun::OnFire(FSimpleDelegate IncreasePowerBarDelegate, float PlayerDamage, float PlayerFireRate)

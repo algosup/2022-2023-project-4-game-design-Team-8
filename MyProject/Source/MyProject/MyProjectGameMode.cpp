@@ -9,7 +9,7 @@
 #include "Sound/SoundCue.h" 
 #include "TimerManager.h"
 #include "EnnemyBase.h"
-
+#include "PaperTileMapComponent.h"
 
 AMyProjectGameMode::AMyProjectGameMode()
 {
@@ -21,6 +21,7 @@ AMyProjectGameMode::AMyProjectGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/2DCharacter"));
     //static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/BP_Yul"));
     static ConstructorHelpers::FClassFinder<APawn> EnnemyBase(TEXT("/Game/TopDownCPP/Blueprints/MyEnnemyBase"));
+    
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
@@ -29,6 +30,11 @@ AMyProjectGameMode::AMyProjectGameMode()
     if (Cue.Object != nullptr)
     {
         UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
+    }
+    static ConstructorHelpers::FObjectFinder<UPaperTileMapComponent> TileMap(TEXT("PaperTileMap'/Game/YulMaps/Level_1/verticalSlice/verticalSlice.verticalSlice'"));
+    if (TileMap.Object != nullptr)
+    {
+        TileMap.Object->CreateNewOwnedTileMap();
     }
     if (EnnemyBase.Class != nullptr)
     {
@@ -61,5 +67,7 @@ void AMyProjectGameMode::SpawnEnnemies()
 {
     FActorSpawnParameters ActorSpawnParams;
     ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-    AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,FVector(-716.f,-545.f,160.f),FRotator(0.f,0.f,0.f), ActorSpawnParams);
+    AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,FVector(-480.f,-1825.f,33.21f),FRotator(0.f,0.f,0.f), ActorSpawnParams);
+    AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
+    PlayerAI->Possess(SpawnedActor);
 }

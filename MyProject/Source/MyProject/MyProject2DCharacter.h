@@ -72,6 +72,8 @@ protected:
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;
 
+    UFUNCTION()
+        void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
    
     /** Called to choose the correct animation to play based on the character's movement state */
 	virtual void UpdateAnimation();
@@ -88,6 +90,8 @@ protected:
     
 	virtual void DecrementHealth(int damage);
 	virtual void Die();
+    
+    
 public:
 	AMyProject2DCharacter();
     

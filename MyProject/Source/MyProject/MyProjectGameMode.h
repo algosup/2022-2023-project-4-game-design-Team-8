@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
 #include "UserInterface.h"
+#include "EnnemyAIController.h"
 #include "MyProjectGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -24,7 +25,11 @@ protected:
     class UUserInterface* UserInterface;
     
     TSubclassOf<class AEnnemyBase> Ennemy;
+    
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<AEnnemyAIController> MyAIControllerClass;
 
+    
     void SpawnEnnemies();
     virtual void BeginPlay() override;
 };
