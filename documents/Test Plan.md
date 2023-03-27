@@ -22,11 +22,11 @@ The following features will be tested:
     - Enemies and player can deal damage to each other
 - Environment
     - Multiple rooms to explore
-    - Procedural generation?
+    - Procedural generation
 
 ### Features not to be tested
 
-The following features won't be tested because they are not required for the game to function properly and are not part of the main gameplay loop.
+The following features won't be tested because they are not required for the game to function properly and are not part of the main gameplay loop and / or the MVP (minimum valuable product)
 - Fight System
     - Player can block and/or deflect incomming projectiles 
 - Environment
@@ -56,7 +56,7 @@ Flow Chart
 
 ## Schedule
 
-After each new version of the game tests will be conducted to ensure the newly implemented features are working correctly
+After each new version of the game, tests will be conducted to ensure the newly implemented features are working correctly
 
 ## Defect Tracking
 
