@@ -16,7 +16,7 @@ APickableWeapon::APickableWeapon(const FObjectInitializer& PCIP) : Super(PCIP)
 //    static FConstructorStatics ConstructorStatics;
 
 //    WeaponFlipbook = ConstructorStatics.weaponAsset.Get();
-
+    SetActorRelativeRotation(FRotator(0.f, 0.f, -90.f));
     //Creating our Default Components
 //    WeaponSprite = PCIP.CreateDefaultSubobject<UPaperFlipbookComponent>(this,TEXT("Weapon Sprite"));
 //    RootComponent = WeaponSprite;
@@ -24,12 +24,32 @@ APickableWeapon::APickableWeapon(const FObjectInitializer& PCIP) : Super(PCIP)
 }
 
 void APickableWeapon::BeginPlay(){
+    Super::BeginPlay();
+    SetActorRelativeRotation(FRotator(0.f, 0.f, -90.f));
+}
+
+//void APickableWeapon::Tick(float DeltaTime)
+//{
+//    Super::Tick(DeltaTime);
+//    if (RangedWeapon == nullptr)
+//    {
+//        InitWeapon();
+//    }
+//}
+
+void APickableWeapon::PickedUp()
+{
+    Destroy();
+}
+
+void APickableWeapon::InitWeapon()
+{
     if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(WeaponClass))
     {
         RangedWeapon = Weapon;
-        RangedWeapon->AttachToComponent(RootComponent,FAttachmentTransformRules::SnapToTargetIncludingScale);
-        RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
-        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
-    }
+        RangedWeapon->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+        RangedWeapon->SetActorRelativeLocation(FVector(-20.f, 0.f, -8.f));
+        RangedWeapon->SetActorRelativeRotation(FRotator(0.f, 0.f, 0.f));
 
+    }
 }

@@ -18,17 +18,13 @@ public:
     APickableWeapon(const FObjectInitializer& PCIP);
 
     virtual void BeginPlay() override;
+    //virtual void Tick(float DeltaTime) override;
+    void PickedUp();
+    UFUNCTION(BlueprintCallable)
+    void InitWeapon();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
         TSubclassOf<class ARangedWeapon> WeaponClass;
     class ARangedWeapon* RangedWeapon;
-    
-    // The animation to play while awaiting pickup
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-        class UPaperFlipbook* IdleFrontAnimation;
-    
-    UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
-        class UPaperFlipbookComponent* WeaponSprite;
-    UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
-        class UPaperFlipbook* WeaponFlipbook;
+   
 };

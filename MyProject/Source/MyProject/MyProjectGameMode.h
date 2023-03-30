@@ -33,7 +33,8 @@ protected:
     class UUserInterface* UserInterface;
     
     TSubclassOf<class AEnnemyBase> Ennemy;
-    TSubclassOf<class APickableWeapon> PickableWeapon;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "PickableWeapon")
+        TSubclassOf<class APickableWeapon> PickableWeapon;
     
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;

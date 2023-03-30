@@ -98,7 +98,10 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 void AMyProject2DCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    InitWeapon();
+    if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
+    {
+        InitWeapon(Weapon);
+    }
     GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AMyProject2DCharacter::OnHit);
 }
 void AMyProject2DCharacter::Tick(float DeltaSeconds)
@@ -114,17 +117,14 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
 //////////////////////////////////////////////////////////////////////////
 // Animation
 
-void AMyProject2DCharacter::InitWeapon()
+void AMyProject2DCharacter::InitWeapon(ARangedWeapon* Weapon)
 {
-    if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
-    {
-        RangedWeapon = Weapon;
-        RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
-        RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
-        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
-        APlayerController* PC = Cast<APlayerController>(GetController());
-        RangedWeapon->SetPC(PC);
-    }
+    RangedWeapon = Weapon;
+    RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
+    RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
+    RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    RangedWeapon->SetPC(PC);
 }
 void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -138,12 +138,17 @@ void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAct
     {
 
     }
-    else if (ARangedWeapon* PickedWeapon = Cast<ARangedWeapon>(OtherActor))
+    else if (APickableWeapon* PickableWeapon = Cast<APickableWeapon>(OtherActor))
     {
         AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
-        GameMode->DropWeapon(RangedWeapon,PickedWeapon->GetActorLocation());
-        RangedWeapon = PickedWeapon;
-        InitWeapon();
+        RangedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        GameMode->DropWeapon(RangedWeapon, PickableWeapon->GetActorLocation());
+        ARangedWeapon* PickedWeapon = PickableWeapon->RangedWeapon;
+        FDetachmentTransformRules rules = FDetachmentTransformRules(EDetachmentRule::KeepRelative,true);
+        PickedWeapon->DetachFromActor(rules);
+        InitWeapon(PickedWeapon);
+        PickableWeapon->PickedUp();
+        LaunchCharacter((-GetCharacterMovement()->GetLastInputVector()) * 200, true, true);
     }
 }
 

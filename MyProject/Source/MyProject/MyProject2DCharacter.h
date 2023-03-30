@@ -48,7 +48,6 @@ private:
     bool bIsFiring = false;
 protected:
     FSimpleDelegate IncreasePowerBarDelegate;
-    void InitWeapon();
 	// The animation to play while running around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Animations)
         class UPaperFlipbook* RunningAnimation;
@@ -71,6 +70,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;
+
+    void InitWeapon(ARangedWeapon* Weapon);
 
     UFUNCTION()
         void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

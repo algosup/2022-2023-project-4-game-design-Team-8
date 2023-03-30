@@ -18,6 +18,7 @@
 #include "PaperTileMapComponent.h"
 #include "PaperTileLayer.h"
 #include "PaperTileMap.h"
+#include "SubMachineGun.h"
 
 AMyProjectGameMode::AMyProjectGameMode()
 {
@@ -29,7 +30,7 @@ AMyProjectGameMode::AMyProjectGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/2DCharacter"));
     //static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/BP_Yul"));
     static ConstructorHelpers::FClassFinder<APawn> EnnemyBase(TEXT("/Game/TopDownCPP/Blueprints/MyEnnemyBase"));
-    static ConstructorHelpers::FClassFinder<APawn> PickableWeaponBase(TEXT("/Game/TopDownCPP/Blueprints/MyPickableWeapon"));
+    static ConstructorHelpers::FClassFinder<APickableWeapon> PickableWeaponBase(TEXT("/Game/TopDownCPP/Blueprints/MyPickableWeapon"));
     
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
@@ -38,7 +39,7 @@ AMyProjectGameMode::AMyProjectGameMode()
     static ConstructorHelpers::FObjectFinder<USoundCue> Cue(TEXT("SoundCue'/Game/2DSideScroller/Test.Test'"));
     if (Cue.Object != nullptr)
     {
-        UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
+        //UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
     }
 
     if (EnnemyBase.Class != nullptr)
@@ -68,22 +69,28 @@ void AMyProjectGameMode::BeginPlay()
     {
         GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProjectGameMode::SpawnEnnemies,5.f,true);
     }
-    
+    /*if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
+    {
+        Weapon->SetActorRelativeLocation(FVector(300.f,200.f,33.f));
+        UClass* SubMachineClass = ASubMachineGun::StaticClass();
+        Weapon->WeaponClass = SubMachineClass;
+    }*/
 }
 
-//void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
-//{
-//    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
-//    {
-//        Weapon->SetActorRelativeLocation(PickedWeaponLocation);
-//        Weapon->WeaponClass = RangedWeapon->GetClass();
-//        Weapon->RangedWeapon = RangedWeapon;
-//    }
-//}
 void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
 {
-    ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(ARangedWeapon->GetClass());
+    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
+    {
+        Weapon->SetActorRelativeLocation(PickedWeaponLocation);
+        Weapon->WeaponClass = RangedWeapon->GetClass();
+        Weapon->InitWeapon();
+        RangedWeapon->Destroy();
+    }
 }
+//void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
+//{
+//    ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(RangedWeapon->GetClass(),PickedWeaponLocation,FRotator::ZeroRotator);
+//}
 
 void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput)
 {
