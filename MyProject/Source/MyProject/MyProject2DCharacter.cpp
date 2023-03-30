@@ -7,6 +7,8 @@
 #include "MyProjectPlayerController.h"
 #include "Projectile.h"
 #include "UserInterface.h"
+#include "PickableWeapon.h"
+#include "PickableItem.h"
 
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -96,15 +98,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 void AMyProject2DCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
-    {
-        RangedWeapon = Weapon;
-        RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
-        RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
-        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
-        APlayerController* PC = Cast<APlayerController>(GetController());
-        RangedWeapon->SetPC(PC);
-    }
+    InitWeapon();
     GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AMyProject2DCharacter::OnHit);
 }
 void AMyProject2DCharacter::Tick(float DeltaSeconds)
@@ -114,36 +108,42 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
     {
         Fire();
     }
-    
     // Update animation to match the motion
     UpdateAnimation();
 }
 //////////////////////////////////////////////////////////////////////////
 // Animation
 
+void AMyProject2DCharacter::InitWeapon()
+{
+    if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
+    {
+        RangedWeapon = Weapon;
+        RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
+        RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
+        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
+        APlayerController* PC = Cast<APlayerController>(GetController());
+        RangedWeapon->SetPC(PC);
+    }
+}
 void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
     if (APaperTileMapActor* Tile = Cast<APaperTileMapActor>(OtherActor))
     {
-//        Tile->GetRenderComponent()->GetTile(this);
-        int TileX = 0;
-        int TileY = 0;
-        int Height = 0;
-        int Width = 0;
-        int NumLayers = 0;
-        FVector TilePos = GetActorLocation();
-        TilePos.Z = -TilePos.Y;
-        Tile->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(TilePos,TileX,TileY);
-        Tile->GetRenderComponent()->GetMapSize(Width,Height,NumLayers);
-        FPaperTileInfo* TileInfo = new FPaperTileInfo();
-        TileInfo->TileSet = Tile->GetRenderComponent()->GetTile(TileX,TileY,7).TileSet;//NumLayers-2);
-        TileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(TileX,TileY,7).PackedTileIndex;//NumLayers-2);
-        
-        UE_LOG(LogTemp,Warning,TEXT("TileInfo.PackedTileIndex %d"),TileInfo->PackedTileIndex);
-        UE_LOG(LogTemp,Warning,TEXT("Tile->GetRenderComponent().OwnsTileMap %s"),Tile->GetRenderComponent()->OwnsTileMap() ? TEXT("True"): TEXT("False"));
-        TileInfo->PackedTileIndex += 1;
-        Tile->GetRenderComponent()->SetTile(TileX,TileY,7,*TileInfo);
-        UE_LOG(LogTemp,Warning,TEXT("PAPERTILEMAP, X%d, Y%d NumLayers %d %d"),TileX,TileY,NumLayers, TileInfo->PackedTileIndex);
+        FVector PlayerPosition = GetActorLocation();
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        GameMode->OpenDoor(PlayerPosition,Tile,GetCharacterMovement()->GetLastInputVector());
+    }
+    else if (APickableItem* PickedItem = Cast<APickableItem>(OtherActor))
+    {
+
+    }
+    else if (ARangedWeapon* PickedWeapon = Cast<ARangedWeapon>(OtherActor))
+    {
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        GameMode->DropWeapon(RangedWeapon,PickedWeapon->GetActorLocation());
+        RangedWeapon = PickedWeapon;
+        InitWeapon();
     }
 }
 

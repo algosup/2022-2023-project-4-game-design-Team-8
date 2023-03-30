@@ -9,7 +9,7 @@
 #include "PickableWeapon.generated.h"
 
 UCLASS()
-class MYPROJECT_API APickableWeapon : public APickableItem
+class MYPROJECT_API APickableWeapon : public AActor
 {
 	GENERATED_BODY()
 	
@@ -17,7 +17,6 @@ public:
 	// Sets default values for this actor's properties
     APickableWeapon(const FObjectInitializer& PCIP);
 
-protected:
     virtual void BeginPlay() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
@@ -28,9 +27,6 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
         class UPaperFlipbook* IdleFrontAnimation;
     
-    UFUNCTION()
-        void OnEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex);
-
     UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
         class UPaperFlipbookComponent* WeaponSprite;
     UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)

@@ -6,6 +6,12 @@
 #include "GameFramework/GameMode.h"
 #include "UserInterface.h"
 #include "EnnemyAIController.h"
+#include "PickableWeapon.h"
+
+#include "PaperTileMapActor.h"
+#include "PaperTileMapComponent.h"
+#include "PaperTileLayer.h"
+#include "PaperTileMap.h"
 #include "MyProjectGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -15,7 +21,9 @@ class AMyProjectGameMode : public AGameMode
 
 public:
 	AMyProjectGameMode();
-    
+
+    void DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation);
+    void OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput);
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;
@@ -25,6 +33,7 @@ protected:
     class UUserInterface* UserInterface;
     
     TSubclassOf<class AEnnemyBase> Ennemy;
+    TSubclassOf<class APickableWeapon> PickableWeapon;
     
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;

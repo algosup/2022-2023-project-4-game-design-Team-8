@@ -48,7 +48,7 @@ private:
     bool bIsFiring = false;
 protected:
     FSimpleDelegate IncreasePowerBarDelegate;
-    
+    void InitWeapon();
 	// The animation to play while running around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Animations)
         class UPaperFlipbook* RunningAnimation;

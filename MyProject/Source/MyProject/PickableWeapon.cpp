@@ -8,12 +8,12 @@
 APickableWeapon::APickableWeapon(const FObjectInitializer& PCIP) : Super(PCIP)
 {
     
-    struct FConstructorStatics
-    {
-        ConstructorHelpers::FObjectFinderOptional<UPaperFlipbook> weaponAsset;
-        FConstructorStatics() : weaponAsset(TEXT("PaperFlipbook'/Game/2DSideScroller/Sprites/MP5.MP5'")){}
-    };
-    static FConstructorStatics ConstructorStatics;
+//    struct FConstructorStatics
+//    {
+//        ConstructorHelpers::FObjectFinderOptional<UPaperFlipbook> weaponAsset;
+//        FConstructorStatics() : weaponAsset(TEXT("PaperFlipbook'/Game/2DSideScroller/Sprites/MP5.MP5'")){}
+//    };
+//    static FConstructorStatics ConstructorStatics;
 
 //    WeaponFlipbook = ConstructorStatics.weaponAsset.Get();
 
@@ -32,12 +32,4 @@ void APickableWeapon::BeginPlay(){
         RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
     }
 
-}
-
-void APickableWeapon::OnEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex)
-{
-   if(AMyProject2DCharacter* player = Cast<AMyProject2DCharacter>(OtherActor))
-   {
-//       player->PickUpWeapon(RangedWeapon);
-   }
 }
