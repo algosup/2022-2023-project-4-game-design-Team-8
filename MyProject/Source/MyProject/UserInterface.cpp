@@ -24,5 +24,5 @@ void UUserInterface::NativeTick (const FGeometry& MyGeometry, float InDeltaTime)
     Opts.SetMaximumFractionalDigits(0);
     CurrentHealthLabel->SetText(FText::AsNumber(Owner->GetHealth(), &Opts));
     MaxHealthLabel->SetText(FText::AsNumber(Owner->GetMaxHealth(), &Opts));
-    PlayerWeapon = Owner->GetRangedWeapon()->GunSprite;
+    PlayerWeapon = Owner->GetRangedWeapon()->GunFlipbookComponent;
 }

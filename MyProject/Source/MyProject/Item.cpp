@@ -5,8 +5,16 @@
 
 Item::Item()
 {
+	ItemName = "Default";
+	ItemFlipbookComponent->SetFlipbook(ItemFlipbook);
 }
 
 Item::~Item()
+{
+	ItemName = "Default";
+	ItemFlipbookComponent->SetFlipbook(ItemFlipbook);
+}
+
+void Item::OnPickup(AMyProject2DCharacter* Player)
 {
 }

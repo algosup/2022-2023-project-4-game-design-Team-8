@@ -15,7 +15,7 @@ class MYPROJECT_API APickableWeapon : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-    APickableWeapon(const FObjectInitializer& PCIP);
+    APickableWeapon();
 
     virtual void BeginPlay() override;
     //virtual void Tick(float DeltaTime) override;

@@ -20,6 +20,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/Actor.h"
 
 #include "Camera/CameraComponent.h"
 
@@ -107,7 +108,7 @@ void AMyProject2DCharacter::BeginPlay()
 void AMyProject2DCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if (bIsFiring)
+    if (GetbIsFiring())
     {
         Fire();
     }
@@ -120,6 +121,7 @@ void AMyProject2DCharacter::Tick(float DeltaSeconds)
 void AMyProject2DCharacter::InitWeapon(ARangedWeapon* Weapon)
 {
     RangedWeapon = Weapon;
+    RangedWeapon->SetOwner(this);
     RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
     RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
     RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
@@ -217,12 +219,12 @@ void AMyProject2DCharacter::StopFire()
 }
 void AMyProject2DCharacter::Fire()
 {
-    RangedWeapon->OnFire(IncreasePowerBarDelegate, PlayerDamage, PlayerFireRate);
+    RangedWeapon->OnFire(IncreasePowerBarDelegate);
 }
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 {
-    if (bCanTakeDamage)
+    if (GetbCanTakeDamage())
     {
         UGameInstance* GI = Cast<UGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
         if(GI)
@@ -240,24 +242,20 @@ void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 
 void AMyProject2DCharacter::DecreasePowerBar()
 {
-    if (PowerBar == 100.f) UnPower();
-    PowerBar = PowerBar >= 10.f ? PowerBar - 10.f : 0.f;
+    if (GetPowerBar() == 100.f) UnPower();
+    PowerBar = GetPowerBar() >= 10.f ? GetPowerBar() - 10.f : 0.f;
 }
 void AMyProject2DCharacter::IncreasePowerBar()
 {
-    PowerBar = PowerBar < 100.f ? PowerBar += 5.f : 100.f;
-    if (PowerBar == 100.f) Power();
+    PowerBar = GetPowerBar() < 100.f ? GetPowerBar() + (1.f * PowerBarMultiplier) : 100.f;
+    if (GetPowerBar() == 100.f) Power();
 }
 
 void AMyProject2DCharacter::Power()
 {
-    if(PlayerFireRate != 5.f)
-    PlayerFireRate += 4.f;
 }
 void AMyProject2DCharacter::UnPower()
 {
-    if (PlayerFireRate != 1.f)
-    PlayerFireRate -= 4.f;
 }
 
 void AMyProject2DCharacter::BecomeVulnerable()
