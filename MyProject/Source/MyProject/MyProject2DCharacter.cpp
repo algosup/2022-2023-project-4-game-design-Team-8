@@ -86,7 +86,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
     GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
     /*GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
@@ -161,7 +161,7 @@ void AMyProject2DCharacter::UpdateAnimation()
     UPaperFlipbook* DesiredAnimation;
     
     float GunRotation = RangedWeapon->GetGunRotation().GetComponentForAxis(EAxis::Z);
-    if (GunRotation <= 0.f)
+    if (GunRotation >= 0.f)
     {
         DesiredAnimation = IdleBackAnimation;
     }else
@@ -189,6 +189,7 @@ void AMyProject2DCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
     
     PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyProject2DCharacter::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, this, &AMyProject2DCharacter::StopFire);
+    PlayerInputComponent->BindAction("Restart", IE_Released, this, &AMyProject2DCharacter::Die);
 
 }
 

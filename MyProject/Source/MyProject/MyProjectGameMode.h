@@ -38,7 +38,7 @@ protected:
     
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;
-
+    bool doorclosed = true;
     
     void SpawnEnnemies();
     virtual void BeginPlay() override;

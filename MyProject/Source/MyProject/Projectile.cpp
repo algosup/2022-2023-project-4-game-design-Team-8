@@ -35,10 +35,11 @@ AProjectile::AProjectile(const FObjectInitializer& PCIP) : Super(PCIP)
     ProjectileHitbox->SetCapsuleHalfHeight(6.0f);
     ProjectileHitbox->SetupAttachment(RootComponent);
 
+    RootComponent->SetRelativeScale3D(FVector(2.f,2.f,2.f));
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
     ProjectileMovement->UpdatedComponent = ProjectileSprite;
-    ProjectileMovement->InitialSpeed = 3000.0f;
-    ProjectileMovement->MaxSpeed = 3000.0f;
+    ProjectileMovement->InitialSpeed = 1500.0f;
+    ProjectileMovement->MaxSpeed = 1500.0f;
     ProjectileMovement->bRotationFollowsVelocity = false;
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->SetPlaneConstraintEnabled(true);

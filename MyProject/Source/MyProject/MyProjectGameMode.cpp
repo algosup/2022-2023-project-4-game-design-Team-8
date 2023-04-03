@@ -18,6 +18,7 @@
 #include "PaperTileMapComponent.h"
 #include "PaperTileLayer.h"
 #include "PaperTileMap.h"
+#include "PaperTileSet.h"
 #include "SubMachineGun.h"
 
 AMyProjectGameMode::AMyProjectGameMode()
@@ -94,6 +95,7 @@ void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWe
 
 void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput)
 {
+    if(!doorclosed)return;
     int TileX = 0;
     int TileY = 0;
     int Height = 0;
@@ -127,14 +129,22 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Til
     
     TileInfo->TileSet = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).TileSet;
     TileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).PackedTileIndex;
-    TileInfo->PackedTileIndex += 1;
+    
     
     UpperDoorTileInfo->TileSet = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).TileSet;
     UpperDoorTileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).PackedTileIndex;
-    UpperDoorTileInfo->PackedTileIndex += 1;
     
-    Tile->GetRenderComponent()->SetTile(TileX,TileY,DoorsClosed,*TileInfo);
-    Tile->GetRenderComponent()->SetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed,*UpperDoorTileInfo);
+    
+    if(TileInfo->TileSet->GetTileUserData(TileInfo->PackedTileIndex).ToString() == "DoorClosed"){
+        UE_LOG(LogTemp,Warning,TEXT("TileInfo USERDATANAME %s"),*UpperDoorTileInfo->TileSet->GetTileMetadata(UpperDoorTileInfo->PackedTileIndex)->UserDataName.ToString());
+        TileInfo->PackedTileIndex += 4;
+        Tile->GetRenderComponent()->SetTile(TileX,TileY,DoorsClosed,*TileInfo);}
+    if(UpperDoorTileInfo->TileSet->GetTileUserData(UpperDoorTileInfo->PackedTileIndex).ToString() == "DoorClosed"){
+        UE_LOG(LogTemp,Warning,TEXT("UpperDoorTileInfo USERDATANAME %s"),*UpperDoorTileInfo->TileSet->GetTileMetadata(UpperDoorTileInfo->PackedTileIndex)->UserDataName.ToString());
+        UpperDoorTileInfo->PackedTileIndex += 4;
+        Tile->GetRenderComponent()->SetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed,*UpperDoorTileInfo);
+    }
+    Tile->GetRenderComponent()->RebuildCollision();
 }
 
 void AMyProjectGameMode::SpawnEnnemies()
