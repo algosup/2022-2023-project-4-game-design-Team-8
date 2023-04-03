@@ -114,14 +114,21 @@ public:
     virtual void IncreasePowerBar();
 
 
-    float GetPlayerSpeed() { return PlayerSpeed; }
-    float GetMaxHealth() { return MaxHealth; }
-    float GetHealth() { return Health; }
-    float GetPlayerDamage() { return PlayerDamage; }
-    float GetPlayerFireRate() { return PlayerFireRate; }
+    float GetPlayerSpeed() { return PlayerSpeed + PlayerSpeedUp; }
+    float GetMaxHealth() { return MaxHealth + MaxHealthUp; }
+    float GetHealth() { return Health + HealthUp; }
+    float GetPlayerDamage() { return PlayerDamage + PlayerDamageUp; }
+    float GetPlayerFireRate() { return PlayerFireRate + PlayerFireRateUp; }
     float GetPowerBar() { return PowerBar; }
-    float GetPowerBarMultiplier() { return PowerBarMultiplier; }
+    float GetPowerBarMultiplier() { return PowerBarMultiplier + PowerBarMultiplierUp; }
 
     bool GetbIsFiring() { return bIsFiring; }
     bool GetbCanTakeDamage() { return bCanTakeDamage; }
+    
+    float PlayerSpeedUp = 0.f;
+    float PlayerDamageUp = 0.f;
+    float PlayerFireRateUp = 0.f;
+    float MaxHealthUp = 0.f;
+    float PowerBarMultiplierUp = 0.f;
+    float HealthUp = 0.f;
 };

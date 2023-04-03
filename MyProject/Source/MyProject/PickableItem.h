@@ -17,10 +17,12 @@ public:
     APickableItem();
 	void PickedUp();
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		TSubclassOf<class Item> ItemClass;
-	class Item* ItemContained;*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+		TSubclassOf<class UItem> ItemClass;
+	class UItem* ItemContained;
 
+    UPROPERTY(EditDefaultsOnly, Category = Item)
+        class UPaperFlipbookComponent* ItemFlipbookComponent;
 	UFUNCTION(BlueprintCallable)
-		void InitItem();
+		void InitItem(UItem* Item);
 };

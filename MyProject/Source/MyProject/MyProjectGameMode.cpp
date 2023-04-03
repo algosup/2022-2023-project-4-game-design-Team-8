@@ -8,11 +8,14 @@
 #include "MyProjectPlayerController.h"
 #include "UserInterface.h"
 #include "PickableWeapon.h"
+#include "Item.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h" 
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Containers/Array.h"
+#include "UObject/UObjectGlobals.h"
 
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
@@ -51,6 +54,11 @@ AMyProjectGameMode::AMyProjectGameMode()
     {
         PickableWeapon = PickableWeaponBase.Class;
     }
+    
+//    void UItem::SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp)
+    UItem* DmgUp= NewObject<UItem>( UItem::StaticClass());
+    DmgUp->SetStats(0.f,1.f,0.f,0.f,0.f,0.f);
+    ItemInstances.Add(DmgUp);
 }
 
 
@@ -113,19 +121,10 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Til
     
     Tile->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(PlayerPosition,TileX,TileY);
 
-    if(abs(PlayerLastInput.Y) > abs(PlayerLastInput.X))
-    {
-        TileY += PlayerLastInput.Y;
-        UpperDoorTileY = PlayerLastInput.Y + TileY;
-        UpperDoorTileX = TileX;
-    }
-    else if(abs(PlayerLastInput.X) > abs(PlayerLastInput.Y))
-    {
-        TileX += PlayerLastInput.X;
-        UpperDoorTileX = PlayerLastInput.X + TileX;
-        UpperDoorTileY = TileY;
-    }
-    else {return;}
+    TileY += PlayerLastInput.Y;
+    UpperDoorTileY = PlayerLastInput.Y + TileY;
+    TileX += PlayerLastInput.X;
+    UpperDoorTileX = PlayerLastInput.X + TileX;
     
     TileInfo->TileSet = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).TileSet;
     TileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).PackedTileIndex;
@@ -134,7 +133,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Til
     UpperDoorTileInfo->TileSet = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).TileSet;
     UpperDoorTileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).PackedTileIndex;
     
-    
+    if(UpperDoorTileInfo->PackedTileIndex == -1 && TileInfo->PackedTileIndex)return;
     if(TileInfo->TileSet->GetTileUserData(TileInfo->PackedTileIndex).ToString() == "DoorClosed"){
         UE_LOG(LogTemp,Warning,TEXT("TileInfo USERDATANAME %s"),*UpperDoorTileInfo->TileSet->GetTileMetadata(UpperDoorTileInfo->PackedTileIndex)->UserDataName.ToString());
         TileInfo->PackedTileIndex += 4;

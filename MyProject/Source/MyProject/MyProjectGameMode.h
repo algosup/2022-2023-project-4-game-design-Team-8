@@ -24,6 +24,9 @@ public:
 
     void DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation);
     void OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput);
+    
+    UPROPERTY(EditAnywhere,BlueprintReadWrite)
+        TArray<UItem*> ItemInstances;
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;
