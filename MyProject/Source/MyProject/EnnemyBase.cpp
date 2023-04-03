@@ -6,7 +6,7 @@
 #include "Projectile.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
-
+#include "AIController.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 // Sets default values

@@ -6,6 +6,7 @@
 #include "EnnemyBase.h"
 #include "PaperCharacter.h"
 #include "RangedWeapon.h"
+#include "Item.h"
 #include "MyProject2DCharacter.generated.h"
 
 /**
@@ -34,21 +35,23 @@ class AMyProject2DCharacter : public APaperCharacter
     class UDecalComponent* CursorToWorld;
     
 	virtual void Tick(float DeltaSeconds) override;
-private:
+protected:
     bool bCanTakeDamage = true;
-    virtual void BecomeVulnerable();
+
     float PowerBar = 0.f;
     FTimerHandle TimerHandler;
 
     float PlayerSpeed = 10.f;
-    float PlayerDamage = 5.f;
+    float PlayerDamage = 0.f;
     float PlayerFireRate = 1.f;
-    float MaxHealth = 50.f;
+    float MaxHealth = 10.f;
+    float PowerBarMultiplier = 1.f;
     float Health = MaxHealth;
     bool bIsFiring = false;
+
+    //TArray<Item> ItemList;
 protected:
     FSimpleDelegate IncreasePowerBarDelegate;
-    
 	// The animation to play while running around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Animations)
         class UPaperFlipbook* RunningAnimation;
@@ -72,6 +75,10 @@ protected:
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;
 
+    virtual void InitWeapon(ARangedWeapon* Weapon);
+
+    UFUNCTION()
+        void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
    
     /** Called to choose the correct animation to play based on the character's movement state */
 	virtual void UpdateAnimation();
@@ -86,23 +93,35 @@ protected:
     virtual void StopFire();
     virtual void Fire();
     
+    virtual void BecomeVulnerable();
 	virtual void DecrementHealth(int damage);
 	virtual void Die();
+    
+    
 public:
 	AMyProject2DCharacter();
     
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     ARangedWeapon* GetRangedWeapon() { return RangedWeapon; }
-    float GetHealth(){ return Health;}
-    float GetMaxHealth(){ return MaxHealth;}
-    float GetPowerBar() { return PowerBar; }
         
     virtual void Power();
 
-    void UnPower();
+    virtual void UnPower();
     
     virtual void Hit(AEnnemyBase* ennemy);
     virtual void DecreasePowerBar();
     virtual void IncreasePowerBar();
+
+
+    float GetPlayerSpeed() { return PlayerSpeed; }
+    float GetMaxHealth() { return MaxHealth; }
+    float GetHealth() { return Health; }
+    float GetPlayerDamage() { return PlayerDamage; }
+    float GetPlayerFireRate() { return PlayerFireRate; }
+    float GetPowerBar() { return PowerBar; }
+    float GetPowerBarMultiplier() { return PowerBarMultiplier; }
+
+    bool GetbIsFiring() { return bIsFiring; }
+    bool GetbCanTakeDamage() { return bCanTakeDamage; }
 };

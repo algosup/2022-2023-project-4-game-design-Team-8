@@ -47,8 +47,13 @@ public:
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 10.0f;
     
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
+        class UBehaviorTree* TreeAsset;
+    
     float GetHealth(){ return Health;}
     float GetMaxHealth(){ return MaxHealth;}
+    
+    
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
