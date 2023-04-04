@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{amssymb}
 \usepackage{algorithm}
 \usepackage[
     noEnd=true,
@@ -30,7 +31,7 @@
     \Statex
 
     \Require $N \ge 2$ number of rooms to generate
-          \\ $L \neq $ list of rooms
+          \\ $L \neq \varnothing$ list of rooms
           \\ $p_s \in [0, 1]$ probability of having a special room
     \Ensure $R$ matrix of rooms
     \Function{level generation}{}
@@ -41,8 +42,8 @@
         \State{$R_{(0, 0)} \gets r_0$}
         \While{the number of placed rooms is less than $N-1$}
             \State{$r_1, s_1 \gets$ \Call{random neighbor}{$R$}}
-            \State{$x_1, y_1 \gets c(r_1)$}
-            \State{let $x_2, y_2$ be $x_1, y_1$ incremented towards $s$}
+            \State{$(x_1, y_1) \gets c(r_1)$}
+            \State{let $(x_2, y_2)$ be $(x_1, y_1)$ incremented towards $s$}
             \State{let $r_2$ a random room from L}
             \If{$p$ a uniformly random probability $\ge p_s$}
                 \State{make the room special}
