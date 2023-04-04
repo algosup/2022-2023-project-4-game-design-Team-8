@@ -56,9 +56,10 @@ AMyProjectGameMode::AMyProjectGameMode()
     }
     
 //    void UItem::SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp)
-    UItem* DmgUp= NewObject<UItem>( UItem::StaticClass());
+    /*UItem* DmgUp= NewObject<UItem>( UItem::StaticClass());
     DmgUp->SetStats(0.f,1.f,0.f,0.f,0.f,0.f);
-    ItemInstances.Add(DmgUp);
+    ItemInstances.Add(DmgUp);*/
+    UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances %d"),ItemInstances.Num());
 }
 
 

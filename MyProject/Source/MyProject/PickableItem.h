@@ -21,7 +21,7 @@ public:
 		TSubclassOf<class UItem> ItemClass;
 	class UItem* ItemContained;
 
-    UPROPERTY(EditDefaultsOnly, Category = Item)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
         class UPaperFlipbookComponent* ItemFlipbookComponent;
 	UFUNCTION(BlueprintCallable)
 		void InitItem(UItem* Item);

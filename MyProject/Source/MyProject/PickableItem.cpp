@@ -25,5 +25,5 @@ void APickableItem::InitItem(UItem* Item)
     }*/
 //    ItemContained = NewObject<UItem>(this,ItemClass);
     ItemContained = Item;
-    ItemFlipbookComponent->SetFlipbook(ItemContained->ItemFlipbook);
+    //ItemFlipbookComponent->SetFlipbook(ItemContained->ItemFlipbook);
 }
