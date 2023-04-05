@@ -19,7 +19,8 @@ public:
 	UItem();
 	virtual void OnPickup(AMyProject2DCharacter* Player);
     void SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp);
-
+    UFUNCTION(BlueprintCallable)
+    void DisplayName();
 
 	UPROPERTY(EditAnyWhere,BlueprintReadWrite, Category = Item)
 		class UPaperFlipbook* ItemFlipbook;

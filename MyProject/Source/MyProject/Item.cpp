@@ -29,3 +29,7 @@ void UItem::OnPickup(AMyProject2DCharacter* Player)
     Player->PowerBarMultiplierUp += PowerBarMultiplier;
     Player->HealthUp += Health;
 }
+
+void UItem::DisplayName(){
+    UE_LOG(LogTemp,Warning,TEXT("My Name Is %s"), *ItemName);
+}

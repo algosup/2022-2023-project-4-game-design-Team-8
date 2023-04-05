@@ -26,7 +26,7 @@ public:
     void OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput);
     
     UPROPERTY(EditAnywhere,BlueprintReadWrite)
-        TArray<UItem*> ItemInstances;
+        TMap<FString,UItem*> ItemInstances;
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;

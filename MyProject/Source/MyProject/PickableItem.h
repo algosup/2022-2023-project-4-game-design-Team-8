@@ -18,11 +18,10 @@ public:
 	void PickedUp();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		TSubclassOf<class UItem> ItemClass;
 	class UItem* ItemContained;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
         class UPaperFlipbookComponent* ItemFlipbookComponent;
 	UFUNCTION(BlueprintCallable)
-		void InitItem(UItem* Item);
+		void InitItem(FString Item,AMyProjectGameMode* GM);
 };
