@@ -3,18 +3,33 @@
 
 #include "Item.h"
 
-Item::Item()
+UItem::UItem()
 {
 	ItemName = "Default";
-	ItemFlipbookComponent->SetFlipbook(ItemFlipbook);
+//	ItemFlipbookComponent->SetFlipbook(ItemFlipbook);
 }
 
-Item::~Item()
+void UItem::SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp)
 {
-	ItemName = "Default";
-	ItemFlipbookComponent->SetFlipbook(ItemFlipbook);
+    Speed = SpeedUp;
+    Damage = DamageUp;
+    FireRate = FireRateUp;
+    MaxHealth = MaxHealthUp;
+    PowerBarMultiplier = PowerBarMultiplierUp;
+    Health = HealthUp;
 }
 
-void Item::OnPickup(AMyProject2DCharacter* Player)
+
+void UItem::OnPickup(AMyProject2DCharacter* Player)
 {
+    Player->PlayerSpeedUp += Speed;
+    Player->PlayerDamageUp += Damage;
+    Player->PlayerFireRateUp += FireRate;
+    Player->MaxHealthUp += MaxHealth;
+    Player->PowerBarMultiplierUp += PowerBarMultiplier;
+    Player->HealthUp += Health;
+}
+
+void UItem::DisplayName(){
+    UE_LOG(LogTemp,Warning,TEXT("My Name Is %s"), *ItemName);
 }

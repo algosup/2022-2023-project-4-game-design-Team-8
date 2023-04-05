@@ -8,18 +8,22 @@
 #include "MyProjectPlayerController.h"
 #include "UserInterface.h"
 #include "PickableWeapon.h"
+#include "Item.h"
+#include "SubMachineGun.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h" 
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/KismetArrayLibrary.h"
+#include "UObject/UObjectGlobals.h"
+#include "Containers/Map.h"
 
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "PaperTileLayer.h"
 #include "PaperTileMap.h"
 #include "PaperTileSet.h"
-#include "SubMachineGun.h"
 
 AMyProjectGameMode::AMyProjectGameMode()
 {
@@ -51,6 +55,32 @@ AMyProjectGameMode::AMyProjectGameMode()
     {
         PickableWeapon = PickableWeaponBase.Class;
     }
+    
+//    void UItem::SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp)
+    UItem* DmgUp= NewObject<UItem>( UItem::StaticClass());
+    DmgUp->SetStats(0.f,1.f,0.f,0.f,0.f,0.f);
+    ItemInstances.Emplace("DamageUp",DmgUp);
+    DmgUp->DisplayName();
+    UE_LOG(LogTemp,Warning,TEXT("maybe did displé"));
+
+    UItem* zeitgj = *ItemInstances.Find("DamageUp");
+    zeitgj->DisplayName();
+    UE_LOG(LogTemp,Warning,TEXT("zeitgj maybe did displé"));
+
+    UItem* FireRateUp= NewObject<UItem>( UItem::StaticClass());
+    FireRateUp->SetStats(0.f,0.f,0.5f,0.f,0.f,0.f);
+    ItemInstances.Emplace("FireRateUp",FireRateUp);
+
+    UItem* BigDmgUp= NewObject<UItem>( UItem::StaticClass());
+    BigDmgUp->SetStats(0.f,3.f,0.f,0.f,0.f,0.f);
+    ItemInstances.Emplace("DamageUp2",BigDmgUp);
+    UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances %d"),ItemInstances.Num());
+
+    for (auto Itr = ItemInstances.CreateIterator(); Itr; ++Itr)
+    {
+        UE_LOG(LogTemp,Warning,TEXT("Key %s,"),*Itr.Key());
+        Itr.Value()->DisplayName();
+    }
 }
 
 
@@ -76,6 +106,7 @@ void AMyProjectGameMode::BeginPlay()
         UClass* SubMachineClass = ASubMachineGun::StaticClass();
         Weapon->WeaponClass = SubMachineClass;
     }*/
+    UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances in beginplay %d"),ItemInstances.Num());
 }
 
 void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
@@ -113,19 +144,10 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Til
     
     Tile->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(PlayerPosition,TileX,TileY);
 
-    if(abs(PlayerLastInput.Y) > abs(PlayerLastInput.X))
-    {
-        TileY += PlayerLastInput.Y;
-        UpperDoorTileY = PlayerLastInput.Y + TileY;
-        UpperDoorTileX = TileX;
-    }
-    else if(abs(PlayerLastInput.X) > abs(PlayerLastInput.Y))
-    {
-        TileX += PlayerLastInput.X;
-        UpperDoorTileX = PlayerLastInput.X + TileX;
-        UpperDoorTileY = TileY;
-    }
-    else {return;}
+    TileY += PlayerLastInput.Y;
+    UpperDoorTileY = PlayerLastInput.Y + TileY;
+    TileX += PlayerLastInput.X;
+    UpperDoorTileX = PlayerLastInput.X + TileX;
     
     TileInfo->TileSet = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).TileSet;
     TileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).PackedTileIndex;
@@ -134,7 +156,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Til
     UpperDoorTileInfo->TileSet = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).TileSet;
     UpperDoorTileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).PackedTileIndex;
     
-    
+    if(UpperDoorTileInfo->PackedTileIndex == -1 && TileInfo->PackedTileIndex)return;
     if(TileInfo->TileSet->GetTileUserData(TileInfo->PackedTileIndex).ToString() == "DoorClosed"){
         UE_LOG(LogTemp,Warning,TEXT("TileInfo USERDATANAME %s"),*UpperDoorTileInfo->TileSet->GetTileMetadata(UpperDoorTileInfo->PackedTileIndex)->UserDataName.ToString());
         TileInfo->PackedTileIndex += 4;
@@ -154,4 +176,13 @@ void AMyProjectGameMode::SpawnEnnemies()
     AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,FVector(-480.f,-1825.f,33.21f),FRotator(0.f,0.f,0.f), ActorSpawnParams);
     AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
     PlayerAI->Possess(SpawnedActor);
+    UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances %d"),ItemInstances.Num());
+//    UE_LOG(LogTemp, Warning, TEXT("FireRateUp display %s"),(*ItemInstances.Keys());
+//    ItemInstances.Dump();
+//    for (auto Itr = ItemInstances.CreateIterator(); Itr;++Itr)
+//    {
+//        UE_LOG(LogTemp,Warning,TEXT("Key %s,"),*Itr.Key());
+//        Itr.Value()->DisplayName();
+//    }
+//    (*ItemInstances.Find("FireRateUp"))->DisplayName();
 }

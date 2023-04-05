@@ -138,7 +138,9 @@ void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAct
     }
     else if (APickableItem* PickedItem = Cast<APickableItem>(OtherActor))
     {
-
+        UE_LOG(LogTemp,Warning, TEXT("PickedItem"));
+        PickedItem->ItemContained->OnPickup(this);
+        PickedItem->PickedUp();
     }
     else if (APickableWeapon* PickableWeapon = Cast<APickableWeapon>(OtherActor))
     {
