@@ -4,7 +4,11 @@
 #include "RangedWeapon.h"
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
+
 #include "EnnemyBase.h"
+#include "MyProject2DCharacter.h"
+#include "Yul.h"
+
 #include "GameFramework/PlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PaperSpriteComponent.h"
@@ -36,9 +40,10 @@ void ARangedWeapon::Tick(float DeltaTime)
     }
 }
 
-void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate, float PlayerDamage, float PlayerFireRate)
+
+void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
 {
-     if(GetWorld() != NULL && bCanShoot)
+     if(GetWorld() != NULL && GetbCanShoot())
      {
          FRotator SpawnRotation = GetActorRotation();
         
@@ -46,14 +51,17 @@ void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate, float Playe
         
          FActorSpawnParameters ActorSpawnParams;
          ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-         AProjectile* proj = GetWorld()->SpawnActor<AProjectile>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
+         AProjectile* proj = GetWorld()->SpawnActor<AProjectile>(GetProjectile(), SpawnLocation, SpawnRotation, ActorSpawnParams);
          proj->IncreasePowerBarDelegate = IncreasePowerBarDelegate;
-         proj->DamageValue = WeaponDamage + PlayerDamage;
-         bCanShoot = false;
-         float WaitTimer = 1.f/(WeaponFireRate+PlayerFireRate);
-         if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+         if (AMyProject2DCharacter* owner = Cast<AMyProject2DCharacter>(GetOwner()))
          {
-             GetWorldTimerManager().SetTimer(TimerHandler, this, &ARangedWeapon::AllowShoot,WaitTimer,false);
+             proj->DamageValue = GetWeaponDamage() + owner->GetPlayerDamage();
+             float WaitTimer = 1.f / (GetWeaponFireRate() * owner->GetPlayerFireRate());
+             bCanShoot = false;
+             if (!GetWorld()->GetTimerManager().IsTimerActive(GetTimerHandler()))
+             {
+                 GetWorldTimerManager().SetTimer(GetTimerHandler(), this, &ARangedWeapon::AllowShoot, WaitTimer, false);
+             }
          }
      }
 }

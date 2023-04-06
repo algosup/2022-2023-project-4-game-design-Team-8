@@ -7,6 +7,8 @@
 #include "MyProjectPlayerController.h"
 #include "Projectile.h"
 #include "UserInterface.h"
+#include "PickableWeapon.h"
+#include "PickableItem.h"
 
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -18,6 +20,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/Actor.h"
 
 #include "Camera/CameraComponent.h"
 
@@ -33,6 +36,11 @@
 #include "Materials/Material.h"
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
+
+#include "PaperTileMapActor.h"
+#include "PaperTileMapComponent.h"
+#include "PaperTileLayer.h"
+#include "PaperTileMap.h"
 
 #include "Math/Axis.h" 
 #include "Engine/World.h"
@@ -69,6 +77,7 @@ AMyProject2DCharacter::AMyProject2DCharacter()
     GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
     
     
+    
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
     SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
@@ -92,16 +101,60 @@ void AMyProject2DCharacter::BeginPlay()
     Super::BeginPlay();
     if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
     {
-        RangedWeapon = Weapon;
-        RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
-        RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
-        RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
-        APlayerController* PC = Cast<APlayerController>(GetController());
-        RangedWeapon->SetPC(PC);
+        InitWeapon(Weapon);
     }
+    GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AMyProject2DCharacter::OnHit);
+}
+void AMyProject2DCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    if (GetbIsFiring())
+    {
+        Fire();
+    }
+    // Update animation to match the motion
+    UpdateAnimation();
 }
 //////////////////////////////////////////////////////////////////////////
 // Animation
+
+void AMyProject2DCharacter::InitWeapon(ARangedWeapon* Weapon)
+{
+    RangedWeapon = Weapon;
+    RangedWeapon->SetOwner(this);
+    RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
+    RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
+    RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    RangedWeapon->SetPC(PC);
+}
+void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    if (APaperTileMapActor* Tile = Cast<APaperTileMapActor>(OtherActor))
+    {
+        FVector PlayerPosition = GetActorLocation();
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        GameMode->OpenDoor(PlayerPosition,Tile,GetCharacterMovement()->GetLastInputVector());
+    }
+    else if (APickableItem* PickedItem = Cast<APickableItem>(OtherActor))
+    {
+        UE_LOG(LogTemp,Warning, TEXT("PickedItem"));
+        PickedItem->ItemContained->OnPickup(this);
+        PickedItem->PickedUp();
+    }
+    else if (APickableWeapon* PickableWeapon = Cast<APickableWeapon>(OtherActor))
+    {
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        RangedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        GameMode->DropWeapon(RangedWeapon, PickableWeapon->GetActorLocation());
+        ARangedWeapon* PickedWeapon = PickableWeapon->RangedWeapon;
+        FDetachmentTransformRules rules = FDetachmentTransformRules(EDetachmentRule::KeepRelative,true);
+        PickedWeapon->DetachFromActor(rules);
+        InitWeapon(PickedWeapon);
+        PickableWeapon->PickedUp();
+        LaunchCharacter((-GetCharacterMovement()->GetLastInputVector()) * 200, true, true);
+    }
+}
 
 void AMyProject2DCharacter::UpdateAnimation()
 {
@@ -126,17 +179,6 @@ void AMyProject2DCharacter::UpdateAnimation()
 	}
 }
 
-void AMyProject2DCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-    if (bIsFiring)
-    {
-        Fire();
-    }
-    
-    // Update animation to match the motion
-    UpdateAnimation();
-}
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -180,12 +222,12 @@ void AMyProject2DCharacter::StopFire()
 }
 void AMyProject2DCharacter::Fire()
 {
-    RangedWeapon->OnFire(IncreasePowerBarDelegate, PlayerDamage, PlayerFireRate);
+    RangedWeapon->OnFire(IncreasePowerBarDelegate);
 }
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 {
-    if (bCanTakeDamage)
+    if (GetbCanTakeDamage())
     {
         UGameInstance* GI = Cast<UGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
         if(GI)
@@ -203,24 +245,20 @@ void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 
 void AMyProject2DCharacter::DecreasePowerBar()
 {
-    if (PowerBar == 100.f) UnPower();
-    PowerBar = PowerBar >= 10.f ? PowerBar - 10.f : 0.f;
+    if (GetPowerBar() == 100.f) UnPower();
+    PowerBar = GetPowerBar() >= 10.f ? GetPowerBar() - 10.f : 0.f;
 }
 void AMyProject2DCharacter::IncreasePowerBar()
 {
-    PowerBar = PowerBar < 100.f ? PowerBar += 5.f : 100.f;
-    if (PowerBar == 100.f) Power();
+    PowerBar = GetPowerBar() < 100.f ? GetPowerBar() + (1.f * PowerBarMultiplier) : 100.f;
+    if (GetPowerBar() == 100.f) Power();
 }
 
 void AMyProject2DCharacter::Power()
 {
-    if(PlayerFireRate != 5.f)
-    PlayerFireRate += 4.f;
 }
 void AMyProject2DCharacter::UnPower()
 {
-    if (PlayerFireRate != 1.f)
-    PlayerFireRate -= 4.f;
 }
 
 void AMyProject2DCharacter::BecomeVulnerable()
