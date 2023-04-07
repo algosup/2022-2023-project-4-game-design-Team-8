@@ -3,7 +3,3 @@
 
 #include "Room.h"
 
-ARoom::ARoom()
-{
-    bCanHaveNeighbours = true;
-}
