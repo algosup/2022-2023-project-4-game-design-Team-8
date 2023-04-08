@@ -27,6 +27,8 @@ public:
     
     UPROPERTY(EditAnywhere,BlueprintReadWrite)
         TMap<FString,UItem*> ItemInstances;
+        
+    void SpawnEnnemies(FVector Location);
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;
@@ -43,6 +45,5 @@ protected:
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;
     bool doorclosed = true;
     
-    void SpawnEnnemies();
     virtual void BeginPlay() override;
 };
