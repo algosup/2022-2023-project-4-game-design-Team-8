@@ -7,6 +7,12 @@
 #include "EnnemyBase.h"
 #include "MyProjectGameMode.h"
 
+void ARoom::BeginPlay()
+{
+    Super::BeginPlay();
+    cleared = false;
+    EnnemyNumber = 0;
+}
 void ARoom::FindMetaTiles()
 {
     FTileCoordinate MapSize;
