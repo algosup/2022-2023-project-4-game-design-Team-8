@@ -60,15 +60,19 @@ void ARoom::FindMetaTiles()
 
 void ARoom::SpawnEnnemies()
 {   
-    for (auto& Ennemy : EnnemySpawnTiles)
+    if (!cleared)
     {
-        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
-        FVector TileVector = GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(Ennemy.X, Ennemy.Y,Ennemy.Layer);
-        TileVector.Y = -TileVector.Z;
-        TileVector.Z = 70.f;
-        GameMode->SpawnEnnemies(TileVector);
-        //UE_LOG(LogTemp, Warning, TEXT("Spawn %d"), EnnemySpawnTiles.Num());
-        // AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
-        // PlayerAI->Possess(SpawnedActor);
+        for (auto& Ennemy : EnnemySpawnTiles)
+        {
+            AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+            FVector TileVector = GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(Ennemy.X, Ennemy.Y, Ennemy.Layer);
+            TileVector.Y = -TileVector.Z;
+            TileVector.Z = 70.f;
+            GameMode->SpawnEnnemies(TileVector);
+            EnnemyNumber++;
+            //UE_LOG(LogTemp, Warning, TEXT("Spawn %d"), EnnemySpawnTiles.Num());
+            // AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
+            // PlayerAI->Possess(SpawnedActor);
+        }
     }
 }

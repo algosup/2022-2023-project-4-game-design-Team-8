@@ -9,6 +9,8 @@
 #include "AIController.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "MyProjectGameMode.h"
 // Sets default values
 AEnnemyBase::AEnnemyBase()
 {
@@ -38,7 +40,10 @@ void AEnnemyBase::BeginPlay()
 void AEnnemyBase::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
+    APawn* Character = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+    FVector Destination = (Character->GetActorLocation() - GetActorLocation());
+    AddMovementInput(Destination);
+    //GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity * 5;
 }
 
 void AEnnemyBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -76,5 +81,7 @@ void AEnnemyBase::DecrementHealth(int damage)
 }
 void AEnnemyBase::Die()
 {
+    AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+    GameMode->EnnemyDeath();
     Destroy();
 }

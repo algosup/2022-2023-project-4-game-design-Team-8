@@ -49,7 +49,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
     TArray<FTileCoordinate> EnnemySpawnTiles;
     
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
     int EnnemyNumber;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
     bool cleared;
 
 

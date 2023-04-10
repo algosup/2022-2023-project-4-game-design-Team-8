@@ -266,9 +266,18 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
 
 void AMyProjectGameMode::SpawnEnnemies(FVector EnnemySpawnVector)
 {
-    FActorSpawnParameters ActorSpawnParams;
-    ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-    AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,EnnemySpawnVector,FRotator(0.f,0.f,0.f), ActorSpawnParams);
-    //AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
-    //PlayerAI->Possess(SpawnedActor);
+        FActorSpawnParameters ActorSpawnParams;
+        ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy, EnnemySpawnVector, FRotator(0.f, 0.f, 0.f), ActorSpawnParams);
+        AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
+        PlayerAI->Possess(SpawnedActor);    
+}
+
+void AMyProjectGameMode::EnnemyDeath()
+{
+    (*Map.Find(CurrentRoomCoord))->EnnemyNumber--;
+    if ((*Map.Find(CurrentRoomCoord))->EnnemyNumber <= 0)
+    {
+        (*Map.Find(CurrentRoomCoord))->cleared = true;
+    }
 }

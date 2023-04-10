@@ -35,6 +35,7 @@ public:
     int CurrentRoomCoord = 5050;
 
     void SpawnEnnemies(FVector Location);
+    void EnnemyDeath();
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;
