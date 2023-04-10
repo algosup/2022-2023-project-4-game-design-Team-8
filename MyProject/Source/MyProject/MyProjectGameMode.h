@@ -7,12 +7,14 @@
 #include "UserInterface.h"
 #include "EnnemyAIController.h"
 #include "PickableWeapon.h"
+#include "Room.h"
 
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "PaperTileLayer.h"
 #include "PaperTileMap.h"
 #include "MyProjectGameMode.generated.h"
+
 
 UCLASS(minimalapi)
 class AMyProjectGameMode : public AGameMode
@@ -23,11 +25,15 @@ public:
 	AMyProjectGameMode();
 
     void DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation);
-    void OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput);
+    void OpenDoor(FVector PlayerPosition,ARoom* Room,FVector PlayerLastInput, AMyProject2DCharacter* Character);
     
     UPROPERTY(EditAnywhere,BlueprintReadWrite)
         TMap<FString,UItem*> ItemInstances;
         
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+        TMap<int, ARoom*> Map;
+    int CurrentRoomCoord = 5050;
+
     void SpawnEnnemies(FVector Location);
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)

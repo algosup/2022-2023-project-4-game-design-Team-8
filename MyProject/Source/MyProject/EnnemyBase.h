@@ -52,7 +52,9 @@ public:
     
     float GetHealth(){ return Health;}
     float GetMaxHealth(){ return MaxHealth;}
-    
+    FTimerHandle TimerHandler;
+
+    void ResetColor();
     
 protected:
     // Called when the game starts or when spawned

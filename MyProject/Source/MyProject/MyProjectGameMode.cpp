@@ -55,6 +55,10 @@ AMyProjectGameMode::AMyProjectGameMode()
     {
         PickableWeapon = PickableWeaponBase.Class;
     }
+
+
+    FLatentActionInfo LatentInfo;
+    UGameplayStatics::LoadStreamLevel(GetWorld(), "TopDownExampleMap", true, true, LatentInfo);
     
 //    void UItem::SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp)
     // UItem* DmgUp= NewObject<UItem>( UItem::StaticClass());
@@ -124,7 +128,7 @@ void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWe
 //    ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(RangedWeapon->GetClass(),PickedWeaponLocation,FRotator::ZeroRotator);
 //}
 
-void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Tile,FVector PlayerLastInput)
+void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector PlayerLastInput,AMyProject2DCharacter* Character)
 {
     if(!doorclosed)return;
     int TileX = 0;
@@ -138,33 +142,126 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,APaperTileMapActor* Til
     
     PlayerPosition.Z = -PlayerPosition.Y;
     
-    Tile->GetRenderComponent()->GetMapSize(Width,Height,NumLayers);
+    Room->GetRenderComponent()->GetMapSize(Width,Height,NumLayers);
+    FPaperTileInfo Tile;
     FPaperTileInfo* TileInfo = new FPaperTileInfo();
     FPaperTileInfo* UpperDoorTileInfo = new FPaperTileInfo();
     
-    Tile->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(PlayerPosition,TileX,TileY);
+    Room->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(PlayerPosition,TileX,TileY);
 
     TileY += PlayerLastInput.Y;
-    UpperDoorTileY = PlayerLastInput.Y + TileY;
+    UpperDoorTileY = TileY - 1;
     TileX += PlayerLastInput.X;
-    UpperDoorTileX = PlayerLastInput.X + TileX;
+    UpperDoorTileX = TileX;
     
-    TileInfo->TileSet = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).TileSet;
-    TileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(TileX,TileY,DoorsClosed).PackedTileIndex;
+    Tile = Room->GetRenderComponent()->GetTile(TileX, TileY, DoorsClosed);
+    TileInfo->TileSet = Tile.TileSet;
+    TileInfo->PackedTileIndex = Tile.PackedTileIndex;
     
     
-    UpperDoorTileInfo->TileSet = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).TileSet;
-    UpperDoorTileInfo->PackedTileIndex = Tile->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).PackedTileIndex;
+    UpperDoorTileInfo->TileSet = Room->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).TileSet;
+    UpperDoorTileInfo->PackedTileIndex = Room->GetRenderComponent()->GetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed).PackedTileIndex;
     
-    if(UpperDoorTileInfo->PackedTileIndex == -1 && TileInfo->PackedTileIndex)return;
-    if(TileInfo->TileSet->GetTileUserData(TileInfo->PackedTileIndex).ToString() == "DoorClosed"){
+    if(TileInfo->PackedTileIndex != -1 && TileInfo->TileSet->GetTileUserData(TileInfo->PackedTileIndex).ToString() == "DoorClosed"){
         TileInfo->PackedTileIndex += 4;
-        Tile->GetRenderComponent()->SetTile(TileX,TileY,DoorsClosed,*TileInfo);}
-    if(UpperDoorTileInfo->TileSet->GetTileUserData(UpperDoorTileInfo->PackedTileIndex).ToString() == "DoorClosed"){
+        Room->GetRenderComponent()->SetTile(TileX,TileY,DoorsClosed,*TileInfo);}
+    if(UpperDoorTileInfo->PackedTileIndex != -1&& UpperDoorTileInfo->TileSet->GetTileUserData(UpperDoorTileInfo->PackedTileIndex).ToString() == "DoorClosed"){
         UpperDoorTileInfo->PackedTileIndex += 4;
-        Tile->GetRenderComponent()->SetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed,*UpperDoorTileInfo);
+        Room->GetRenderComponent()->SetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed,*UpperDoorTileInfo);
     }
-    Tile->GetRenderComponent()->RebuildCollision();
+
+    if (Room->EnnemyNumber == 0 && UpperDoorTileInfo->PackedTileIndex != -1)
+    {
+        //if (Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2))
+        FName UData = Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).TileSet->GetTileUserData(Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).PackedTileIndex);
+        ARoom* CurrentRoom = *(Map.Find(CurrentRoomCoord));
+        CurrentRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        CurrentRoom->GetRenderComponent()->SetHiddenInGame(true);
+        CurrentRoom->GetRenderComponent()->RebuildCollision();
+
+        ARoom* NewRoom;
+        FVector NewPos = FVector::ZeroVector;
+        if (UData == "doorN")
+        {
+            CurrentRoomCoord -= 100;
+            NewRoom = *(Map.Find(CurrentRoomCoord));
+            for (FTileCoordinate door : NewRoom->DoorTiles)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("log N userdata : %s"), *(door.UserData));
+                if (door.UserData == "doorS")
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("log N IN"));
+                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
+                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (-door.Y));
+                    break;
+                }
+            }
+        }
+        else if (UData == "doorE")
+        {
+            CurrentRoomCoord += 1;
+            NewRoom = *(Map.Find(CurrentRoomCoord));
+            for (FTileCoordinate door : NewRoom->DoorTiles)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("log E"));
+                if (door.UserData == "doorW")
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("log E In"));
+                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
+                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (-door.Y));
+                    break;
+                }
+            }
+        }
+        else if (UData == "doorS")
+        {
+            CurrentRoomCoord += 100;
+            NewRoom = *(Map.Find(CurrentRoomCoord));
+            for (FTileCoordinate door : NewRoom->DoorTiles)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("log S"));
+                if (door.UserData == "doorN")
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("log S In"));
+                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
+                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (door.Y - 4));
+                    break;
+                }
+            }
+        }
+        else if (UData == "doorW")
+        {
+            CurrentRoomCoord -= 1;
+            NewRoom = *(Map.Find(CurrentRoomCoord));
+            for (FTileCoordinate door : NewRoom->DoorTiles)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("log W"));
+                if (door.UserData == "doorE")
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("log W IN"));
+                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
+                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (-door.Y));
+                    break;
+                }
+            }
+        }
+        else
+        {
+            NewRoom = nullptr;
+        }
+        if (NewRoom != nullptr)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TileY %d"), CurrentRoomCoord);
+            NewPos.Y = NewPos.Z;
+            NewPos.Z = Character->GetActorLocation().Z;
+            Character->SetActorLocation(NewPos);
+            NewRoom->GetRenderComponent()->SetHiddenInGame(false);
+            NewRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            NewRoom->GetRenderComponent()->RebuildCollision();
+            NewRoom->SpawnEnnemies();
+        }
+    }
+    Room->GetRenderComponent()->RebuildCollision();
 }
 
 void AMyProjectGameMode::SpawnEnnemies(FVector EnnemySpawnVector)
@@ -172,6 +269,6 @@ void AMyProjectGameMode::SpawnEnnemies(FVector EnnemySpawnVector)
     FActorSpawnParameters ActorSpawnParams;
     ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
     AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy,EnnemySpawnVector,FRotator(0.f,0.f,0.f), ActorSpawnParams);
-    AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
-    PlayerAI->Possess(SpawnedActor);
+    //AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
+    //PlayerAI->Possess(SpawnedActor);
 }

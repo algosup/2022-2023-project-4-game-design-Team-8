@@ -44,6 +44,7 @@
 
 #include "Math/Axis.h" 
 #include "Engine/World.h"
+#include "Room.h"
 
 
 
@@ -130,11 +131,11 @@ void AMyProject2DCharacter::InitWeapon(ARangedWeapon* Weapon)
 }
 void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if (APaperTileMapActor* Tile = Cast<APaperTileMapActor>(OtherActor))
+    if (ARoom* Room = Cast<ARoom>(OtherActor))
     {
         FVector PlayerPosition = GetActorLocation();
         AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
-        GameMode->OpenDoor(PlayerPosition,Tile,GetCharacterMovement()->GetLastInputVector());
+        GameMode->OpenDoor(PlayerPosition,Room,GetCharacterMovement()->GetLastInputVector(),this);
     }
     else if (APickableItem* PickedItem = Cast<APickableItem>(OtherActor))
     {
@@ -235,9 +236,11 @@ void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
             DecrementHealth(ennemy->DamageValue);
             DecreasePowerBar();
             bCanTakeDamage = false;
+            GetSprite()->SetSpriteColor(FLinearColor::Red);
             if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
             {
                 GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::BecomeVulnerable,3.f,false);
+
             }
         }
     }
@@ -264,6 +267,7 @@ void AMyProject2DCharacter::UnPower()
 void AMyProject2DCharacter::BecomeVulnerable()
 {
     bCanTakeDamage = true;
+    GetSprite()->SetSpriteColor(FLinearColor(1.f,1.f,1.f,1.f));
 }
 
 void AMyProject2DCharacter::DecrementHealth(int damage)

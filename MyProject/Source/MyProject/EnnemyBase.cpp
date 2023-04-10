@@ -52,8 +52,18 @@ void AEnnemyBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 void AEnnemyBase::Hit(AProjectile* projectile)
 {
     DecrementHealth(projectile->DamageValue);
+    GetSprite()->SetSpriteColor(FLinearColor::Red);
+    if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+    {
+        GetWorldTimerManager().SetTimer(TimerHandler, this, &AEnnemyBase::ResetColor, 0.5f, false);
+
+    }
 }
 
+void AEnnemyBase::ResetColor()
+{
+    GetSprite()->SetSpriteColor(FLinearColor(1.f, 1.f, 1.f, 1.f));
+}
 
 void AEnnemyBase::DecrementHealth(int damage)
 {

@@ -39,19 +39,19 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Coords")
     TArray<FTileCoordinate> DoorTiles;
-
+    UFUNCTION(BlueprintCallable)
+        void SpawnEnnemies();
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Coords")
         UPaperTileSet* DoorTileSet;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Coords")
         UPaperTileSet*   WallTileSet;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
     TArray<FTileCoordinate> EnnemySpawnTiles;
     
     int EnnemyNumber;
     bool cleared;
 
-    UFUNCTION(BlueprintCallable)
-    void Show();
 
     virtual void BeginPlay() override;
     UFUNCTION(BlueprintCallable)
