@@ -165,19 +165,18 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
     if(TileInfo->PackedTileIndex != -1 && TileInfo->TileSet->GetTileUserData(TileInfo->PackedTileIndex).ToString() == "DoorClosed"){
         TileInfo->PackedTileIndex += 4;
         Room->GetRenderComponent()->SetTile(TileX,TileY,DoorsClosed,*TileInfo);}
-    if(UpperDoorTileInfo->PackedTileIndex != -1&& UpperDoorTileInfo->TileSet->GetTileUserData(UpperDoorTileInfo->PackedTileIndex).ToString() == "DoorClosed"){
+    if(UpperDoorTileInfo->PackedTileIndex != -1 && UpperDoorTileInfo->TileSet->GetTileUserData(UpperDoorTileInfo->PackedTileIndex).ToString() == "DoorClosed"){
         UpperDoorTileInfo->PackedTileIndex += 4;
         Room->GetRenderComponent()->SetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed,*UpperDoorTileInfo);
     }
-
+    Room->GetRenderComponent()->RebuildCollision();
     if (Room->EnnemyNumber == 0 && UpperDoorTileInfo->PackedTileIndex != -1)
     {
         //if (Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2))
+        if (Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).PackedTileIndex == -1) return;
+        if (!Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).TileSet->GetTileMetadata(Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).PackedTileIndex)->HasMetaData()) return;
         FName UData = Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).TileSet->GetTileUserData(Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).PackedTileIndex);
         ARoom* CurrentRoom = *(Map.Find(CurrentRoomCoord));
-        CurrentRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        CurrentRoom->GetRenderComponent()->SetHiddenInGame(true);
-        CurrentRoom->GetRenderComponent()->RebuildCollision();
 
         ARoom* NewRoom;
         FVector NewPos = FVector::ZeroVector;
@@ -208,7 +207,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
                 {
                     UE_LOG(LogTemp, Warning, TEXT("log E In"));
                     UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
-                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (-door.Y));
+                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X + 2, (-door.Y));
                     break;
                 }
             }
@@ -251,7 +250,9 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
         }
         if (NewRoom != nullptr)
         {
-            UE_LOG(LogTemp, Warning, TEXT("TileY %d"), CurrentRoomCoord);
+            CurrentRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+            CurrentRoom->GetRenderComponent()->SetHiddenInGame(true);
+            CurrentRoom->GetRenderComponent()->RebuildCollision();
             NewPos.Y = NewPos.Z;
             NewPos.Z = Character->GetActorLocation().Z;
             Character->SetActorLocation(NewPos);
@@ -261,7 +262,6 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom->SpawnEnnemies();
         }
     }
-    Room->GetRenderComponent()->RebuildCollision();
 }
 
 void AMyProjectGameMode::SpawnEnnemies(FVector EnnemySpawnVector)

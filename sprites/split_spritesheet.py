@@ -7,6 +7,7 @@ from PIL import Image
 
 def convert_spritesheet(filepath: str) -> None:
     outdir = os.path.splitext(filepath)[0]
+    name = os.path.basename(outdir)
     os.makedirs(outdir, exist_ok=True)
 
     img = Image.open(filepath)
@@ -14,7 +15,7 @@ def convert_spritesheet(filepath: str) -> None:
     n_frames = img.width // size
 
     for i in range(n_frames):
-        outpath = os.path.join(outdir, f"{i}.png")
+        outpath = os.path.join(outdir, f"{name}-{i}.png")
         crop = img.crop((i*size, 0, i*size+size, size))
 
         crop.save(outpath)

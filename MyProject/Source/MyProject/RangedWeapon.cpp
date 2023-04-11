@@ -28,6 +28,7 @@ ARangedWeapon::ARangedWeapon()
 void ARangedWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+    MuzzleLocation->SetRelativeRotation(FRotator(-130.f,0.f,0.f));
 }
 
 // Called every frame
@@ -45,7 +46,7 @@ void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
 {
      if(GetWorld() != NULL && GetbCanShoot())
      {
-         FRotator SpawnRotation = GetActorRotation();
+         FRotator SpawnRotation = MuzzleLocation->GetComponentRotation();
         
          FVector SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
         
@@ -79,6 +80,6 @@ void ARangedWeapon::RotateGun(float DeltaTime)
      FVector hitLoc = hitResult.Location;
      float newYaw = (hitLoc - playerLoc).Rotation().Yaw;
      FRotator newRot = GetActorRotation();
-     newRot.Yaw = newYaw + 180;
+     newRot.Yaw = newYaw + 50;
      SetActorRotation(newRot);
 }

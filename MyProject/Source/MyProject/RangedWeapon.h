@@ -51,6 +51,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 		class UPaperFlipbook* GunFlipbook;
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
+		class UPaperFlipbook* MuzzleFlash;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Weapon)
 		class USceneComponent* MuzzleLocation;

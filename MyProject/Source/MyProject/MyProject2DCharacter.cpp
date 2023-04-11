@@ -139,7 +139,6 @@ void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAct
     }
     else if (APickableItem* PickedItem = Cast<APickableItem>(OtherActor))
     {
-        UE_LOG(LogTemp,Warning, TEXT("PickedItem"));
         PickedItem->ItemContained->OnPickup(this);
         PickedItem->PickedUp();
     }
@@ -164,15 +163,41 @@ void AMyProject2DCharacter::UpdateAnimation()
     UPaperFlipbook* DesiredAnimation;
     
     float GunRotation = RangedWeapon->GetGunRotation().GetComponentForAxis(EAxis::Z);
-    if (GunRotation >= 0.f)
+    if (PlayerSpeedSqr > 0.0f)
     {
-        DesiredAnimation = IdleBackAnimation;
-    }else
-    {
-        DesiredAnimation = IdleFrontAnimation;
+        if (GunRotation >= 0 && GunRotation <= 90.f)
+        {
+            DesiredAnimation = RunningRightAnimation;
+        }
+        else if (GunRotation >= -180.f && GunRotation <= -80.f)
+        {
+            DesiredAnimation = RunningLeftAnimation;
+        }
+        else if (GunRotation < 0.f && GunRotation > -80.f)
+        {
+            DesiredAnimation = RunningBackAnimation;
+        }
+        else{
+            DesiredAnimation = RunningFrontAnimation;
+        }
     }
-	// Are we moving or standing still?
-//	UPaperFlipbook* DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleFrontAnimation;
+    else{
+        if (GunRotation >= 0 && GunRotation <= 90.f)
+        {
+            DesiredAnimation = IdleRightAnimation;
+        }
+        else if (GunRotation >= -180.f && GunRotation <= -80.f)
+        {
+            DesiredAnimation = IdleLeftAnimation;
+        }
+        else if (GunRotation < 0.f && GunRotation > -80.f)
+        {
+            DesiredAnimation = IdleBackAnimation;
+        }
+        else{
+            DesiredAnimation = IdleFrontAnimation;
+        }
+    }
     
 	if( GetSprite()->GetFlipbook() != DesiredAnimation 	)
 	{
