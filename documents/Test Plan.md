@@ -37,22 +37,22 @@ The following features won't be tested because they are not required for the gam
 
 Flow Chart
 
-![Flow_Chart](/Images/Flow_Chart.png)
+![Flow_Chart](/documents/Images/Flow_Chart.png)
 
 ## Assumptions
 
 1. The member of the team that is assigned to testing will be present at any point during the project.
-2. ...
+2. Unreal Engine will be working properly during the time of the project.
 
 ## Risks
 
 1. The team member assigned to testing is absent.
-2. ...
+2. Unreal Engine isn't working properly.
 
 ## Contingency plan
 
 1. The team member assigned to testing will make templates for test procedures and will render his work accessible through GitHub to ensure that other team members could take on his work if the need were to rise.
-2. ...
+2. The team will conduct researches to resolve the issue as fast as possible. Also some team members are more familiar with Unreal Engine and they will be able to help other team members if the need were to arise.
 
 ## Schedule
 
