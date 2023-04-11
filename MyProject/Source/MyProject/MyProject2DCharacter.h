@@ -71,6 +71,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
         class UPaperFlipbook* IdleRightAnimation;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* DeathAnimation;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		TSubclassOf<class ARangedWeapon> StartingWeaponClass;
 	class ARangedWeapon* RangedWeapon;

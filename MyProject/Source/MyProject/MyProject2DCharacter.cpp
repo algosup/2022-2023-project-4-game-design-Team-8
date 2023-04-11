@@ -109,6 +109,7 @@ void AMyProject2DCharacter::BeginPlay()
 void AMyProject2DCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if (Health == 0) return;
     if (GetbIsFiring())
     {
         Fire();
@@ -300,7 +301,12 @@ void AMyProject2DCharacter::DecrementHealth(int damage)
     Health -= damage;
     if (Health <= 0.f)
     {
-        Die();
+        GetSprite()->SetSpriteColor(FLinearColor(1.f, 1.f, 1.f, 1.f));
+        GetSprite()->SetFlipbook(DeathAnimation);
+        if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+        {
+            GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::Die, 3.f, false);
+        }
     }
 }
 void AMyProject2DCharacter::Die()

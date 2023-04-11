@@ -46,6 +46,7 @@ void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
 {
      if(GetWorld() != NULL && GetbCanShoot())
      {
+         GunFlipbookComponent->SetFlipbook(MuzzleFlash);
          FRotator SpawnRotation = MuzzleLocation->GetComponentRotation();
         
          FVector SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
@@ -69,6 +70,7 @@ void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
 
 void ARangedWeapon::AllowShoot()
 {
+    GunFlipbookComponent->SetFlipbook(GunFlipbook);
     bCanShoot = true;
 }
 

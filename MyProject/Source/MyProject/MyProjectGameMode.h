@@ -47,6 +47,8 @@ protected:
     TSubclassOf<class AEnnemyBase> Ennemy;
     UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "PickableWeapon")
         TSubclassOf<class APickableWeapon> PickableWeapon;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PickableWeapon")
+        TSubclassOf<class ASubMachineGun> SubMachineClass;
     
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;

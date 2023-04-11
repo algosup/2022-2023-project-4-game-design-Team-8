@@ -9,6 +9,7 @@
 #include "UserInterface.h"
 #include "PickableWeapon.h"
 #include "Item.h"
+#include "Gun.h"
 #include "SubMachineGun.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -36,6 +37,7 @@ AMyProjectGameMode::AMyProjectGameMode()
     //static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDownCPP/Blueprints/BP_Yul"));
     static ConstructorHelpers::FClassFinder<APawn> EnnemyBase(TEXT("/Game/TopDownCPP/Blueprints/MyEnnemyBase"));
     static ConstructorHelpers::FClassFinder<APickableWeapon> PickableWeaponBase(TEXT("/Game/TopDownCPP/Blueprints/MyPickableWeapon"));
+    static ConstructorHelpers::FClassFinder<ASubMachineGun> SubMachineGun(TEXT("/Game/TopDownCPP/Blueprints/MySubMachineGun"));
     
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
@@ -54,6 +56,10 @@ AMyProjectGameMode::AMyProjectGameMode()
     if (PickableWeaponBase.Class != nullptr)
     {
         PickableWeapon = PickableWeaponBase.Class;
+    }
+    if (SubMachineGun.Class != nullptr)
+    {
+        SubMachineClass = SubMachineGun.Class;
     }
 
 
@@ -100,17 +106,16 @@ void AMyProjectGameMode::BeginPlay()
             UserInterface->SetOwner(MyCharacter);
         }
     }
-    // if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
-    // {
-    //     GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProjectGameMode::SpawnEnnemies,5.f,true);
-    // }
-    /*if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
+    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
     {
-        Weapon->SetActorRelativeLocation(FVector(300.f,200.f,33.f));
-        UClass* SubMachineClass = ASubMachineGun::StaticClass();
+        Weapon->SetActorRelativeLocation(FVector(500.f,400.f,33.f));
+        //TSubclassOf<ARangedWeapon> subclass = AGun::StaticClass();
+        //UClass* SubMachineClass = AGun::StaticClass();
+        //Weapon->WeaponClass = SubMachineClass;
         Weapon->WeaponClass = SubMachineClass;
-    }*/
-    // UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances in beginplay %d"),ItemInstances.Num());
+        Weapon->InitWeapon();
+    }
+     //UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances in beginplay %d"),ItemInstances.Num());
 }
 
 void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
