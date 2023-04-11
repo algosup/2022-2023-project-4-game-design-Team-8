@@ -37,7 +37,7 @@ The following features won't be tested because they are not required for the gam
 
 Flow Chart
 
-![Flow_Chart](/documents/Images/Flow_Chart.png)
+![Flow_Chart](/Images/Flow_Chart.png)
 
 ## Assumptions
 
@@ -56,7 +56,7 @@ Flow Chart
 
 ## Schedule
 
-After each new version of the game, tests will be conducted to ensure the newly implemented features are working correctly
+After each new version of the game, tests will be conducted to ensure the newly implemented features are working correctly. Other testing sessions may be conducted if required.
 
 ## Defect Tracking
 
@@ -84,4 +84,5 @@ All bugs found will be saved and repertoriated in a database to facilitate the p
 <b>Software:</b>
 | | |
 | - | - |
-| OS | <span style="color:white"><b>macOS Ventura 13.2</b></span> |
+| OS | <span style="color:white"><b>macOS Ventura 13.3</b></span> |
+| Unreal | <span style="color:white"><b>Version 4.27.2</b></span> |
