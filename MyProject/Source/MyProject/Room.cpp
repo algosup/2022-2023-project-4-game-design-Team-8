@@ -5,6 +5,8 @@
 #include "PaperTileMapComponent.h"
 #include "PaperTileMap.h"
 #include "EnnemyBase.h"
+#include "RangedWeapon.h"
+#include "PickableWeapon.h"
 #include "MyProjectGameMode.h"
 
 void ARoom::BeginPlay()
@@ -70,9 +72,36 @@ void ARoom::SpawnEnnemies()
             TileVector.Z = 70.f;
             GameMode->SpawnEnnemies(TileVector);
             EnnemyNumber++;
-            //UE_LOG(LogTemp, Warning, TEXT("Spawn %d"), EnnemySpawnTiles.Num());
-            // AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
-            // PlayerAI->Possess(SpawnedActor);
         }
+    }
+}
+void ARoom::SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass)
+{
+    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeaponClass))
+    {
+        Weapon->SetActorRelativeLocation(PickedWeaponLocation);
+        Weapon->WeaponClass = RangedWeapon->GetClass();
+        Weapon->InitWeapon();
+        RangedWeapon->Destroy();
+        PickableWeapons.Add(Weapon);
+    }
+}
+
+void ARoom::SpawnPickable(FVector PickedWeaponLocation, UClass* PickableWeaponClass)
+{
+    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeaponClass))
+    {
+        Weapon->SetActorRelativeLocation(PickedWeaponLocation);
+        Weapon->WeaponClass = TSubclassOf<ARangedWeapon>();
+        Weapon->InitWeapon();
+        PickableWeapons.Add(Weapon);
+    }
+}
+
+void ARoom::HidePickables()
+{
+    for (auto Pickable : PickableWeapons)
+    {
+        Pickable->Hide();
     }
 }

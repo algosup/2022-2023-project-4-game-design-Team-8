@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "PaperTileMapActor.h"
-
+#include "RangedWeapon.h"
+#include "PickableWeapon.h"
 #include "PaperTileSet.h"
 #include "Room.generated.h"
 
@@ -41,6 +42,12 @@ public:
     TArray<FTileCoordinate> DoorTiles;
     UFUNCTION(BlueprintCallable)
         void SpawnEnnemies();
+
+    void SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass);
+
+    void SpawnPickable(FVector PickedWeaponLocation, UClass* PickableWeaponClass);
+
+    void HidePickables();
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Coords")
         UPaperTileSet* DoorTileSet;
@@ -54,6 +61,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
     bool cleared;
 
+    TArray<APickableWeapon*> PickableWeapons;
 
     virtual void BeginPlay() override;
     UFUNCTION(BlueprintCallable)

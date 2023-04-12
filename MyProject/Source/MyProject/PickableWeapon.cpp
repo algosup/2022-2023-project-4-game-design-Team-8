@@ -30,3 +30,10 @@ void APickableWeapon::InitWeapon()
         RangedWeapon->SetActorRelativeRotation(FRotator(0.f, 0.f, 0.f));
     }
 }
+
+void APickableWeapon::Hide()
+{
+    //RangedWeapon->SetActorHiddenInGame(true);
+    RangedWeapon->GunFlipbookComponent->SetHiddenInGame(true);
+    SetActorEnableCollision(false);
+}

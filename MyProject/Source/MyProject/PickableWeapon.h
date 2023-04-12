@@ -23,6 +23,8 @@ public:
     UFUNCTION(BlueprintCallable)
     void InitWeapon();
 
+    void Hide();
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
         TSubclassOf<class ARangedWeapon> WeaponClass;
     class ARangedWeapon* RangedWeapon;

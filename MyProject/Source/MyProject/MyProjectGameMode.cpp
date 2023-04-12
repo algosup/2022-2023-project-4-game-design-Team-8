@@ -62,10 +62,6 @@ AMyProjectGameMode::AMyProjectGameMode()
         SubMachineClass = SubMachineGun.Class;
     }
 
-
-    FLatentActionInfo LatentInfo;
-    UGameplayStatics::LoadStreamLevel(GetWorld(), "TopDownExampleMap", true, true, LatentInfo);
-    
 //    void UItem::SetStats(float SpeedUp,float DamageUp,float FireRateUp,float MaxHealthUp,float PowerBarMultiplierUp,float HealthUp)
     // UItem* DmgUp= NewObject<UItem>( UItem::StaticClass());
     // DmgUp->SetStats(0.f,1.f,0.f,0.f,0.f,0.f);
@@ -108,24 +104,24 @@ void AMyProjectGameMode::BeginPlay()
     }
     if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
     {
-        Weapon->SetActorRelativeLocation(FVector(500.f,400.f,33.f));
-        //TSubclassOf<ARangedWeapon> subclass = AGun::StaticClass();
-        //UClass* SubMachineClass = AGun::StaticClass();
-        //Weapon->WeaponClass = SubMachineClass;
+        Weapon->SetActorRelativeLocation(FVector(-4680.f,-4550.f,33.f));
         Weapon->WeaponClass = SubMachineClass;
         Weapon->InitWeapon();
+        //Weapon->AttachToActor(*(Map.Find(CurrentRoomCoord)),FAttachmentTransformRules::KeepWorldTransform);
     }
-     //UE_LOG(LogTemp, Warning, TEXT("Len de ItemInstances in beginplay %d"),ItemInstances.Num());
+    //(*Map.Find(CurrentRoomCoord))->SpawnPickable(FVector(500.f, 400.f, 33.f), PickableWeapon);
 }
 
 void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
 {
+    //(*Map.Find(CurrentRoomCoord))->SpawnPickableWeapon(RangedWeapon, PickedWeaponLocation, PickableWeapon);
     if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
     {
         Weapon->SetActorRelativeLocation(PickedWeaponLocation);
         Weapon->WeaponClass = RangedWeapon->GetClass();
         Weapon->InitWeapon();
         RangedWeapon->Destroy();
+        Weapon->AttachToActor(*(Map.Find(CurrentRoomCoord)), FAttachmentTransformRules::KeepWorldTransform);
     }
 }
 //void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
@@ -191,11 +187,8 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom = *(Map.Find(CurrentRoomCoord));
             for (FTileCoordinate door : NewRoom->DoorTiles)
             {
-                UE_LOG(LogTemp, Warning, TEXT("log N userdata : %s"), *(door.UserData));
                 if (door.UserData == "doorS")
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("log N IN"));
-                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
                     NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (-door.Y));
                     break;
                 }
@@ -207,11 +200,8 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom = *(Map.Find(CurrentRoomCoord));
             for (FTileCoordinate door : NewRoom->DoorTiles)
             {
-                UE_LOG(LogTemp, Warning, TEXT("log E"));
                 if (door.UserData == "doorW")
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("log E In"));
-                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
                     NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X + 2, (-door.Y));
                     break;
                 }
@@ -223,11 +213,8 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom = *(Map.Find(CurrentRoomCoord));
             for (FTileCoordinate door : NewRoom->DoorTiles)
             {
-                UE_LOG(LogTemp, Warning, TEXT("log S"));
                 if (door.UserData == "doorN")
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("log S In"));
-                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
                     NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (door.Y - 4));
                     break;
                 }
@@ -239,11 +226,8 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom = *(Map.Find(CurrentRoomCoord));
             for (FTileCoordinate door : NewRoom->DoorTiles)
             {
-                UE_LOG(LogTemp, Warning, TEXT("log W"));
                 if (door.UserData == "doorE")
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("log W IN"));
-                    UE_LOG(LogTemp, Warning, TEXT("TileY TileX %d %d"), door.Y, door.X);
                     NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X, (-door.Y));
                     break;
                 }
@@ -257,7 +241,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
         {
             CurrentRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
             CurrentRoom->GetRenderComponent()->SetHiddenInGame(true);
-            CurrentRoom->GetRenderComponent()->RebuildCollision();
+            //CurrentRoom->HidePickables();
             NewPos.Y = NewPos.Z;
             NewPos.Z = Character->GetActorLocation().Z;
             Character->SetActorLocation(NewPos);
