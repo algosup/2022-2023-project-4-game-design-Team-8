@@ -22,10 +22,8 @@ void APickableWeapon::PickedUp()
 
 void APickableWeapon::InitWeapon()
 {
-    UE_LOG(LogTemp, Warning, TEXT("INIT"));
     if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(WeaponClass))
     {
-        UE_LOG(LogTemp, Warning, TEXT("SPawn"));
         RangedWeapon = Weapon;
         RangedWeapon->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
         RangedWeapon->SetActorRelativeLocation(FVector(-20.f, 0.f, -8.f));
