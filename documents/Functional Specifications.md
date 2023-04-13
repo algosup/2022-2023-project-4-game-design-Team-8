@@ -69,53 +69,53 @@ We defined 5 playable characters to be implemented.
 
 ## Yul (Main character)
 
-Gender: Male
-Age: 38
-Nationality: Russian
-Hospitalization: Amnesia
-Job: Teacher
-Character: Submissive, uncharismatic, generally looks down
-Story: Tried to commit suicide because he is a teacher in a school and is being abused by the students.
+- Gender: Male
+- Age: 38
+- Nationality: Russian
+- Hospitalization: Amnesia
+- Job: Teacher
+- Character: Submissive, uncharismatic, generally looks down
+- Story: Tried to commit suicide because he is a teacher in a school and is being abused by the students.
 
 ## Rim
 
-Gender: Female
-Age: 33
-Nationality: Egyptian
-Hospitalization: Rage
-Job: Illustrator
-Character: Nervous, oversensitive, irritable
-Story: Treated unfairly by her employer who considers her work lamentable and abused by her husband at home.
+- Gender: Female
+- Age: 33
+- Nationality: Egyptian
+- Hospitalization: Rage
+- Job: Illustrator
+- Character: Nervous, oversensitive, irritable
+- Story: Treated unfairly by her employer who considers her work lamentable and abused by her husband at home.
 
 ## Amber
 
-Gender: Female
-Age: 45
-Nationality: American
-Hospitalization: Madness
-Job: Cleaning lady
-Character: Gossiper, restless, maniac
-Story: Always shows up 30 minutes earlier and goes through her clients' houses three times a day, driving her to burnout.
+- Gender: Female
+- Age: 45
+- Nationality: American
+- Hospitalization: Madness
+- Job: Cleaning lady
+- Character: Gossiper, restless, maniac
+- Story: Always shows up 30 minutes earlier and goes through her clients' houses three times a day, driving her to burnout.
 
 ## Eve
 
-Gender: Female
-Age: 16
-Nationality: British
-Hospitalization: Schizophrenia
-Job: Student
-Character: Unsociable, delusional, emotionless
-Story: Had imaginary friends very early and the lack of parenting prevented early treatment.
+- Gender: Female
+- Age: 16
+- Nationality: British
+- Hospitalization: Schizophrenia
+- Job: Student
+- Character: Unsociable, delusional, emotionless
+- Story: Had imaginary friends very early and the lack of parenting prevented early treatment.
 
 ## Rufin
 
-Gender: Male
-Age: 27
-Nationality: Polish
-Hospitalization: Obesity
-Job: Fast-food worker
-Character: Overweight, sociable, clumsy
-Story: Fond of sweets and always hungry. His job doesn't help his cause and sometimes gets him in trouble.
+- Gender: Male
+- Age: 27
+- Nationality: Polish
+- Hospitalization: Obesity
+- Job: Fast-food worker
+- Character: Overweight, sociable, clumsy
+- Story: Fond of sweets and always hungry. His job doesn't help his cause and sometimes gets him in trouble.
 
 
 
