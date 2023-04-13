@@ -76,8 +76,9 @@ void ARoom::SpawnEnnemies()
     }
     else if (bBossRoom)
     {
+        UE_LOG(LogTemp,Warning,TEXT("BOss"));
         AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
-        GameMode->SpawnBoss(FVector(GetRenderComponent()->TileMap->MapWidth/2,GetRenderComponent()->TileMap->MapHeight/2,40.f));
+        GameMode->SpawnBoss(FVector((GetRenderComponent()->TileMap->MapWidth/2)*32,(GetRenderComponent()->TileMap->MapHeight/2)*32,40.f));
         EnnemyNumber++;
     }
 }

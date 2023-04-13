@@ -47,7 +47,7 @@ AMyProjectGameMode::AMyProjectGameMode()
     static ConstructorHelpers::FObjectFinder<USoundCue> RoomClear(TEXT("SoundCue'/Game/YulSounds/RoomClear.RoomClear'"));
     if (Cue.Object != nullptr)
     {
-        UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object);
+        // UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object);
     }
     if (RoomClear.Object != nullptr)
     {
@@ -140,9 +140,9 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
     
     Room->GetRenderComponent()->TileMap->GetTileCoordinatesFromLocalSpacePosition(PlayerPosition,TileX,TileY);
 
-    TileY += PlayerLastInput.Y;
+    // TileY += PlayerLastInput.Y;
     UpperDoorTileY = TileY - 1;
-    TileX += PlayerLastInput.X;
+    // TileX += PlayerLastInput.X;
     UpperDoorTileX = TileX;
     
     Tile = Room->GetRenderComponent()->GetTile(TileX, TileY, DoorsClosed);
@@ -160,8 +160,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
         UpperDoorTileInfo->PackedTileIndex += 4;
         Room->GetRenderComponent()->SetTile(UpperDoorTileX,UpperDoorTileY,DoorsClosed,*UpperDoorTileInfo);
     }
-    Room->GetRenderComponent()->RebuildCollision();
-    if (Room->EnnemyNumber == 0 && UpperDoorTileInfo->PackedTileIndex != -1)
+    if (Room->EnnemyNumber <= 0 && UpperDoorTileInfo->PackedTileIndex != -1)
     {
         //if (Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2))
         if (Room->GetRenderComponent()->GetTile(UpperDoorTileX, UpperDoorTileY, 2).PackedTileIndex == -1) return;
@@ -171,10 +170,12 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
 
         ARoom* NewRoom;
         FVector NewPos = FVector::ZeroVector;
+        
         if (UData == "doorN")
         {
             CurrentRoomCoord -= 100;
             NewRoom = *(Map.Find(CurrentRoomCoord));
+            
             for (FTileCoordinate door : NewRoom->DoorTiles)
             {
                 if (door.UserData == "doorS")
@@ -192,7 +193,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             {
                 if (door.UserData == "doorW")
                 {
-                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X + 2, (-door.Y));
+                    NewPos = NewRoom->GetRenderComponent()->TileMap->GetTilePositionInLocalSpace(door.X + 1, (-door.Y));
                     break;
                 }
             }
@@ -242,6 +243,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom->ShowPickables();
         }
     }
+    Room->GetRenderComponent()->RebuildCollision();
 }
 
 void AMyProjectGameMode::SpawnEnnemies(FVector EnnemySpawnVector)
