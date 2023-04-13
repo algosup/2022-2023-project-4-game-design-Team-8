@@ -46,7 +46,8 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 10.0f;
-    
+    float Health;
+    float MaxHealth = 100.f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
         class UBehaviorTree* TreeAsset;
     
@@ -61,6 +62,4 @@ protected:
     virtual void BeginPlay() override;
     void DecrementHealth(int damage);
     void Die();
-    float Health;
-    float MaxHealth = 100.f;
 };

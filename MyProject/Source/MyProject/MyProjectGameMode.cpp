@@ -47,7 +47,7 @@ AMyProjectGameMode::AMyProjectGameMode()
     static ConstructorHelpers::FObjectFinder<USoundCue> RoomClear(TEXT("SoundCue'/Game/YulSounds/RoomClear.RoomClear'"));
     if (Cue.Object != nullptr)
     {
-        // UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
+        UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object);
     }
     if (RoomClear.Object != nullptr)
     {
@@ -249,6 +249,17 @@ void AMyProjectGameMode::SpawnEnnemies(FVector EnnemySpawnVector)
         FActorSpawnParameters ActorSpawnParams;
         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
         AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy, EnnemySpawnVector, FRotator(0.f, 0.f, 0.f), ActorSpawnParams);
+        AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
+        PlayerAI->Possess(SpawnedActor);    
+}
+
+void AMyProjectGameMode::SpawnBoss(FVector EnnemySpawnVector)
+{
+        FActorSpawnParameters ActorSpawnParams;
+        ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy, EnnemySpawnVector, FRotator(0.f, 0.f, 0.f), ActorSpawnParams);
+        SpawnedActor->MaxHealth *= 10;
+        SpawnedActor->DamageValue *= 2;
         AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
         PlayerAI->Possess(SpawnedActor);    
 }

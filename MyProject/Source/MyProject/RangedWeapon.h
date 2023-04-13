@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnnemyBase.h"
+#include "Sound/SoundCue.h"
 #include "PaperSpriteComponent.h"
 #include "PaperFlipbookComponent.h"
 
@@ -30,6 +31,9 @@ protected:
     float WeaponDamage = 0.f;
     UPROPERTY(EditDefaultsOnly, Category = WeaponStats)
     float WeaponFireRate = 0.f;
+
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
+    class USoundCue* WeaponSFX;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

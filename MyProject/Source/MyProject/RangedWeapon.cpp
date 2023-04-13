@@ -9,7 +9,9 @@
 #include "MyProject2DCharacter.h"
 #include "Yul.h"
 
+
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PaperSpriteComponent.h"
 
@@ -54,6 +56,7 @@ void ARangedWeapon::OnFire(FSimpleDelegate IncreasePowerBarDelegate)
          FActorSpawnParameters ActorSpawnParams;
          ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
          AProjectile* proj = GetWorld()->SpawnActor<AProjectile>(GetProjectile(), SpawnLocation, SpawnRotation, ActorSpawnParams);
+         UGameplayStatics::PlaySound2D(GetWorld(),WeaponSFX,0.75,0.75);
          proj->IncreasePowerBarDelegate = IncreasePowerBarDelegate;
          if (AMyProject2DCharacter* owner = Cast<AMyProject2DCharacter>(GetOwner()))
          {

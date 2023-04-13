@@ -36,6 +36,7 @@ public:
     int CurrentRoomCoord = 5050;
 
     void SpawnEnnemies(FVector Location);
+    void SpawnBoss(FVector EnnemySpawnVector);
     void EnnemyDeath();
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)

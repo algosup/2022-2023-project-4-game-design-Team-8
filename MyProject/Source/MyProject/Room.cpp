@@ -62,7 +62,7 @@ void ARoom::FindMetaTiles()
 
 void ARoom::SpawnEnnemies()
 {   
-    if (!cleared)
+    if (!cleared && !bBossRoom)
     {
         for (auto& Ennemy : EnnemySpawnTiles)
         {
@@ -73,6 +73,12 @@ void ARoom::SpawnEnnemies()
             GameMode->SpawnEnnemies(TileVector);
             EnnemyNumber++;
         }
+    }
+    else if (bBossRoom)
+    {
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        GameMode->SpawnBoss(FVector(GetRenderComponent()->TileMap->MapWidth/2,GetRenderComponent()->TileMap->MapHeight/2,40.f));
+        EnnemyNumber++;
     }
 }
 void ARoom::SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass, APickableWeapon* Pickable)
