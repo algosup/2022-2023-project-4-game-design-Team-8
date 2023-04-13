@@ -45,6 +45,7 @@ AMyProjectGameMode::AMyProjectGameMode()
 	}
     static ConstructorHelpers::FObjectFinder<USoundCue> Cue(TEXT("SoundCue'/Game/2DSideScroller/Test.Test'"));
     static ConstructorHelpers::FObjectFinder<USoundCue> RoomClear(TEXT("SoundCue'/Game/YulSounds/RoomClear.RoomClear'"));
+    static ConstructorHelpers::FObjectFinder<USoundCue> Victory(TEXT("SoundCue'/Game/YulSounds/VictoryCue.VictoryCue'"));
     if (Cue.Object != nullptr)
     {
         // UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object);
@@ -52,6 +53,10 @@ AMyProjectGameMode::AMyProjectGameMode()
     if (RoomClear.Object != nullptr)
     {
         RoomClearCue = RoomClear.Object;
+    }
+    if (Victory.Object != nullptr)
+    {
+        VictoryCue = Victory.Object;
     }
     
     if (EnnemyBase.Class != nullptr)
@@ -261,6 +266,7 @@ void AMyProjectGameMode::SpawnBoss(FVector EnnemySpawnVector)
         ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
         AEnnemyBase* SpawnedActor = GetWorld()->SpawnActor<AEnnemyBase>(Ennemy, EnnemySpawnVector, FRotator(0.f, 0.f, 0.f), ActorSpawnParams);
         SpawnedActor->MaxHealth *= 10;
+        SpawnedActor->Health *= 10;
         SpawnedActor->DamageValue *= 2;
         AEnnemyAIController* PlayerAI = GetWorld()->SpawnActor<AEnnemyAIController>(MyAIControllerClass);
         PlayerAI->Possess(SpawnedActor);    
@@ -271,7 +277,23 @@ void AMyProjectGameMode::EnnemyDeath()
     (*Map.Find(CurrentRoomCoord))->EnnemyNumber--;
     if ((*Map.Find(CurrentRoomCoord))->EnnemyNumber <= 0)
     {
-        (*Map.Find(CurrentRoomCoord))->cleared = true;
-        UGameplayStatics::PlaySound2D(GetWorld(),RoomClearCue);
+        if((*Map.Find(CurrentRoomCoord))->bBossRoom)
+        {    
+            UGameplayStatics::PlaySound2D(GetWorld(),VictoryCue);
+            if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+            {
+                GetWorldTimerManager().SetTimer(TimerHandler, this,&AMyProjectGameMode::RestartFromBegining , 3.f, false);
+            }
+        }
+        else 
+        {
+            (*Map.Find(CurrentRoomCoord))->cleared = true;
+            UGameplayStatics::PlaySound2D(GetWorld(),RoomClearCue);
+        }
     }
+}
+
+void AMyProjectGameMode::RestartFromBegining()
+{
+    RestartGame();
 }

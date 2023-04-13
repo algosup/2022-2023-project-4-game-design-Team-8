@@ -38,6 +38,7 @@ public:
     void SpawnEnnemies(FVector Location);
     void SpawnBoss(FVector EnnemySpawnVector);
     void EnnemyDeath();
+    void RestartFromBegining();
 protected:
     UPROPERTY(EditAnywhere,Category = Interface)
         TSubclassOf<UUserWidget> Interface;
@@ -53,6 +54,7 @@ protected:
         TSubclassOf<class ASubMachineGun> SubMachineClass;
     
     USoundCue* RoomClearCue;
+    USoundCue* VictoryCue;
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;
     bool doorclosed = true;
