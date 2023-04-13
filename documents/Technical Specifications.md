@@ -136,9 +136,6 @@ Suppose Yul has collected one flat speed boost and one flat damage boost in addi
 `EffectiveDamage = 12`
 
 
-## Procedural Generation
-
-The game uses a procedural generation algorithm to generate levels. The algorithm takes as input a matrix of placed rooms (R) and outputs a new room (r) to add as a neighbor to an existing room (r1) on a specific side (s).
 
 ## Procedural Generation
 
