@@ -37,3 +37,10 @@ void APickableWeapon::Hide()
     RangedWeapon->GunFlipbookComponent->SetHiddenInGame(true);
     SetActorEnableCollision(false);
 }
+
+void APickableWeapon::Show()
+{
+    //RangedWeapon->SetActorHiddenInGame(true);
+    RangedWeapon->GunFlipbookComponent->SetHiddenInGame(false);
+    SetActorEnableCollision(true);
+}

@@ -75,7 +75,7 @@ void ARoom::SpawnEnnemies()
         }
     }
 }
-void ARoom::SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass)
+void ARoom::SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass, APickableWeapon* Pickable)
 {
     if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeaponClass))
     {
@@ -83,16 +83,18 @@ void ARoom::SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeapo
         Weapon->WeaponClass = RangedWeapon->GetClass();
         Weapon->InitWeapon();
         RangedWeapon->Destroy();
+        PickableWeapons.Remove(Pickable);
+        Pickable->PickedUp();
         PickableWeapons.Add(Weapon);
     }
 }
 
-void ARoom::SpawnPickable(FVector PickedWeaponLocation, UClass* PickableWeaponClass)
+void ARoom::SpawnPickable(FVector PickedWeaponLocation, UClass* PickableWeaponClass, UClass* SubMachineClass)
 {
     if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeaponClass))
     {
         Weapon->SetActorRelativeLocation(PickedWeaponLocation);
-        Weapon->WeaponClass = TSubclassOf<ARangedWeapon>();
+        Weapon->WeaponClass = SubMachineClass;
         Weapon->InitWeapon();
         PickableWeapons.Add(Weapon);
     }
@@ -103,5 +105,13 @@ void ARoom::HidePickables()
     for (auto Pickable : PickableWeapons)
     {
         Pickable->Hide();
+    }
+}
+
+void ARoom::ShowPickables()
+{
+    for (auto Pickable : PickableWeapons)
+    {
+        Pickable->Show();
     }
 }

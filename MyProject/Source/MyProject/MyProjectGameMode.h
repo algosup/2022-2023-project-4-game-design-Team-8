@@ -24,7 +24,7 @@ class AMyProjectGameMode : public AGameMode
 public:
 	AMyProjectGameMode();
 
-    void DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation);
+    void DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation, APickableWeapon* Pickable);
     void OpenDoor(FVector PlayerPosition,ARoom* Room,FVector PlayerLastInput, AMyProject2DCharacter* Character);
     
     UPROPERTY(EditAnywhere,BlueprintReadWrite)

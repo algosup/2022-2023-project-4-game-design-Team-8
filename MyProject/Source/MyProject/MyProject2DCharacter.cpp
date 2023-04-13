@@ -147,12 +147,11 @@ void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAct
     {
         AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
         RangedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-        GameMode->DropWeapon(RangedWeapon, PickableWeapon->GetActorLocation());
+        GameMode->DropWeapon(RangedWeapon, PickableWeapon->GetActorLocation(),PickableWeapon);
         ARangedWeapon* PickedWeapon = PickableWeapon->RangedWeapon;
         FDetachmentTransformRules rules = FDetachmentTransformRules(EDetachmentRule::KeepRelative,true);
         PickedWeapon->DetachFromActor(rules);
         InitWeapon(PickedWeapon);
-        PickableWeapon->PickedUp();
         LaunchCharacter((-GetCharacterMovement()->GetLastInputVector()) * 200, true, true);
     }
 }

@@ -102,27 +102,12 @@ void AMyProjectGameMode::BeginPlay()
             UserInterface->SetOwner(MyCharacter);
         }
     }
-    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
-    {
-        Weapon->SetActorRelativeLocation(FVector(-4680.f,-4550.f,33.f));
-        Weapon->WeaponClass = SubMachineClass;
-        Weapon->InitWeapon();
-        //Weapon->AttachToActor(*(Map.Find(CurrentRoomCoord)),FAttachmentTransformRules::KeepWorldTransform);
-    }
     //(*Map.Find(CurrentRoomCoord))->SpawnPickable(FVector(500.f, 400.f, 33.f), PickableWeapon);
 }
 
-void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
+void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation, APickableWeapon* Pickable)
 {
-    //(*Map.Find(CurrentRoomCoord))->SpawnPickableWeapon(RangedWeapon, PickedWeaponLocation, PickableWeapon);
-    if (APickableWeapon* Weapon = GetWorld()->SpawnActor<APickableWeapon>(PickableWeapon))
-    {
-        Weapon->SetActorRelativeLocation(PickedWeaponLocation);
-        Weapon->WeaponClass = RangedWeapon->GetClass();
-        Weapon->InitWeapon();
-        RangedWeapon->Destroy();
-        Weapon->AttachToActor(*(Map.Find(CurrentRoomCoord)), FAttachmentTransformRules::KeepWorldTransform);
-    }
+    (*Map.Find(CurrentRoomCoord))->SpawnPickableWeapon(RangedWeapon, PickedWeaponLocation, PickableWeapon,Pickable);
 }
 //void AMyProjectGameMode::DropWeapon(ARangedWeapon* RangedWeapon,FVector PickedWeaponLocation)
 //{
@@ -241,7 +226,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
         {
             CurrentRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
             CurrentRoom->GetRenderComponent()->SetHiddenInGame(true);
-            //CurrentRoom->HidePickables();
+            CurrentRoom->HidePickables();
             NewPos.Y = NewPos.Z;
             NewPos.Z = Character->GetActorLocation().Z;
             Character->SetActorLocation(NewPos);
@@ -249,6 +234,7 @@ void AMyProjectGameMode::OpenDoor(FVector PlayerPosition,ARoom* Room,FVector Pla
             NewRoom->GetRenderComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
             NewRoom->GetRenderComponent()->RebuildCollision();
             NewRoom->SpawnEnnemies();
+            NewRoom->ShowPickables();
         }
     }
 }

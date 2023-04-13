@@ -24,6 +24,7 @@ public:
     void InitWeapon();
 
     void Hide();
+    void Show();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
         TSubclassOf<class ARangedWeapon> WeaponClass;

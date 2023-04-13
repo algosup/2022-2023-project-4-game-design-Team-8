@@ -43,11 +43,13 @@ public:
     UFUNCTION(BlueprintCallable)
         void SpawnEnnemies();
 
-    void SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass);
-
-    void SpawnPickable(FVector PickedWeaponLocation, UClass* PickableWeaponClass);
-
+    UFUNCTION(BlueprintCallable)
+    void SpawnPickableWeapon(ARangedWeapon* RangedWeapon, FVector PickedWeaponLocation, UClass* PickableWeaponClass, APickableWeapon* Pickable);
+    UFUNCTION(BlueprintCallable)
+    void SpawnPickable(FVector PickedWeaponLocation, UClass* PickableWeaponClass, UClass* SubMachineClass);
+    UFUNCTION(BlueprintCallable)
     void HidePickables();
+    void ShowPickables();
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Coords")
         UPaperTileSet* DoorTileSet;
