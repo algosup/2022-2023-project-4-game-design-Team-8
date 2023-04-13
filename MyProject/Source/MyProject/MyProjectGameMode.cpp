@@ -44,11 +44,16 @@ AMyProjectGameMode::AMyProjectGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
     static ConstructorHelpers::FObjectFinder<USoundCue> Cue(TEXT("SoundCue'/Game/2DSideScroller/Test.Test'"));
+    static ConstructorHelpers::FObjectFinder<USoundCue> RoomClear(TEXT("SoundCue'/Game/YulSounds/RoomClear.RoomClear'"));
     if (Cue.Object != nullptr)
     {
-        //UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
+        // UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object,1.f, 1.f, 1.f);
     }
-
+    if (RoomClear.Object != nullptr)
+    {
+        RoomClearCue = RoomClear.Object;
+    }
+    
     if (EnnemyBase.Class != nullptr)
     {
         Ennemy = EnnemyBase.Class;
@@ -254,5 +259,6 @@ void AMyProjectGameMode::EnnemyDeath()
     if ((*Map.Find(CurrentRoomCoord))->EnnemyNumber <= 0)
     {
         (*Map.Find(CurrentRoomCoord))->cleared = true;
+        UGameplayStatics::PlaySound2D(GetWorld(),RoomClearCue);
     }
 }

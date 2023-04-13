@@ -9,6 +9,7 @@
 #include "PickableWeapon.h"
 #include "Room.h"
 
+#include "Sound/SoundCue.h"
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "PaperTileLayer.h"
@@ -50,6 +51,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PickableWeapon")
         TSubclassOf<class ASubMachineGun> SubMachineClass;
     
+    USoundCue* RoomClearCue;
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AEnnemyAIController> MyAIControllerClass;
     bool doorclosed = true;

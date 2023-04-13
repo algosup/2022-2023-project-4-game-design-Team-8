@@ -24,23 +24,23 @@ public:
 //    void Hit(MeleeWeapon* projectile);
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCapsuleComponent* CapsuleComp;
-	// The animation to play while running around
+UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* RunningBackAnimation;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* RunningLeftAnimation;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* RunningRightAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-		class UPaperFlipbook* RunningAnimation;
-
-    // The animation to play while idle (standing still)
+        class UPaperFlipbook* RunningFrontAnimation;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+        class UPaperFlipbook* IdleFrontAnimation;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
         class UPaperFlipbook* IdleBackAnimation;
-
-    // The animation to play while idle (standing still)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-        class UPaperFlipbook* IdleLeftAnimation;// The animation to play while idle (standing still)
-
+        class UPaperFlipbook* IdleLeftAnimation;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
         class UPaperFlipbook* IdleRightAnimation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
-		class UPaperFlipbook* IdleFrontAnimation;
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

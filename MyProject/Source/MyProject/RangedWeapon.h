@@ -26,7 +26,9 @@ protected:
     bool bCanShoot = true;
     APlayerController* PC;
 
+    UPROPERTY(EditDefaultsOnly, Category = WeaponStats)
     float WeaponDamage = 0.f;
+    UPROPERTY(EditDefaultsOnly, Category = WeaponStats)
     float WeaponFireRate = 0.f;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

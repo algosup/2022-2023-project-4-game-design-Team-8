@@ -44,8 +44,34 @@ void AEnnemyBase::Tick(float DeltaTime)
     FVector Destination = (Character->GetActorLocation() - GetActorLocation());
     AddMovementInput(Destination);
     //GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity * 5;
+    UPaperFlipbook* DesiredAnimation;
+    if(abs(GetCharacterMovement()->Velocity.X) > abs(GetCharacterMovement()->Velocity.Y))
+    {
+        if(GetCharacterMovement()->Velocity.X < 0)
+        {
+            DesiredAnimation = RunningLeftAnimation;
+        }
+        else
+        {
+            DesiredAnimation = RunningRightAnimation;
+        }
+    }
+    else 
+    {
+        if(GetCharacterMovement()->Velocity.Y < 0)
+        {
+            DesiredAnimation = RunningBackAnimation;
+        }
+        else
+        {
+            DesiredAnimation = RunningFrontAnimation;
+        }
+    }
+    if( GetSprite()->GetFlipbook() != DesiredAnimation 	)
+	{
+		GetSprite()->SetFlipbook(DesiredAnimation);
+	}
 }
-
 void AEnnemyBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
     if (AMyProject2DCharacter* player = Cast<AMyProject2DCharacter>(OtherActor))

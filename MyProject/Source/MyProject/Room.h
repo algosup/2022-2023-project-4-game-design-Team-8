@@ -62,6 +62,8 @@ public:
     int EnnemyNumber;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
     bool cleared;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coords")
+    bool bBossRoom = false;
 
     TArray<APickableWeapon*> PickableWeapons;
 
