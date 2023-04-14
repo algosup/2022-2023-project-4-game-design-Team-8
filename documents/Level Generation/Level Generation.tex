@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage[
+    noEnd=true,
+    indLines=false,
+    italicComments=true,
+    rightComments=false,
+    beginComment=\#~,
+]{algpseudocodex}
+
+\floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+\begin{algorithmic}[1]
+
+    \Require $R$ matrix of placed rooms
+    \Ensure $r$ a room to add a new neighbor
+         \\ $s$ side on which to add the neighbor
+    \Function{random neighbor}{}
+        \Repeat
+            \State{let $(x, y)$ be a random index from R}
+            \State{$r \gets R_{(x, y)}$}
+            \State{let $s$ be a side of $r$}
+        \Until{$r$ is not special \textbf{and} $r$ has no neighbor on $s$}
+        \State \Return{$r, s$}
+    \EndFunction
+
+    \Statex
+
+    \Require $N \ge 2$ number of rooms to generate
+          \\ $L \neq \varnothing$ list of rooms
+          \\ $p_s \in [0, 1]$ probability of having a special room
+    \Ensure $R$ matrix of rooms
+    \Function{level generation}{}
+
+        \Comment{$c(r) \in \{ (x, y) \mid R_{(x, y)} = r \}$} % TODO: Check how you actually write it
+        \State{let $r_0 \in L$}
+        \State{make $r_0$ the spawn room}
+        \State{$R_{(0, 0)} \gets r_0$}
+        \While{the number of placed rooms is less than $N-1$}
+            \State{$r_1, s_1 \gets$ \Call{random neighbor}{$R$}}
+            \State{$(x_1, y_1) \gets c(r_1)$}
+            \State{let $(x_2, y_2)$ be $(x_1, y_1)$ incremented towards $s$}
+            \State{let $r_2$ a random room from L}
+            \If{$p$ a uniformly random probability $\ge p_s$}
+                \State{make the room special}
+            \EndIf
+            \State{$R_{(x_2, y_2)} \gets r_2$}
+            \State{make a door between $r_1$ and $r_2$}
+        \EndWhile
+        \State{let $r_3 \in R$ such that $dist(r_3, R_{(0, 0)}) = max\{ dist(r, R_{(0, 0)} \mid r \in R) \}$}
+        \State{make $r_3$ the boss room}
+
+    \EndFunction
+
+\end{algorithmic}
+\end{document}
