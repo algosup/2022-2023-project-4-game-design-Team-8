@@ -5,17 +5,22 @@
 #include "RangedWeapon.h"
 #include "MyProjectGameMode.h"
 #include "MyProjectPlayerController.h"
-#include "ActorToSpawn.h"
+#include "Projectile.h"
+#include "UserInterface.h"
+#include "PickableWeapon.h"
+#include "PickableItem.h"
 
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/WidgetComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/Actor.h"
 
 #include "Camera/CameraComponent.h"
 
@@ -32,8 +37,15 @@
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
 
+#include "PaperTileMapActor.h"
+#include "PaperTileMapComponent.h"
+#include "PaperTileLayer.h"
+#include "PaperTileMap.h"
+
 #include "Math/Axis.h" 
 #include "Engine/World.h"
+#include "Room.h"
+
 
 
 DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
@@ -43,52 +55,44 @@ DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
 
 AMyProject2DCharacter::AMyProject2DCharacter()
 {
+    Health = MaxHealth;
 	// Use only Yaw from the controller and ignore the rest of the rotation.
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = true;
 
 	// Set the size of our collision capsule.
-	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
-	GetCapsuleComponent()->SetCapsuleRadius(20.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(13.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(13.0f);
 
 	// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 450.0f;
+	CameraBoom->TargetArmLength = 300.0f;
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->bDoCollisionTest = false;
-	CameraBoom->SetRelativeRotation(FRotator(-50.0f, -90.0f, 0.0f));
-    GetSprite()->SetRelativeRotation(FRotator(0.f,0.f,0.f));
-
+	CameraBoom->SetRelativeRotation(FRotator(-90.0f, -90.0f, 0.0f));
+    GetSprite()->SetRelativeRotation(FRotator(0.f,0.f,-90.f));
+    GetSprite()->SetRelativeLocation(FVector(0.f,-9.f,0.f));
+    GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
+    GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
+    
+    
+    
 	// Create an orthographic camera (no perspective) and attach it to the boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
+    SideViewCameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
+    SideViewCameraComponent->OrthoWidth = 1024.0f;
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-
-    GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
-    GunMesh->CastShadow = false;
     
-    MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle Location"));
-    MuzzleLocation->SetupAttachment(GunMesh);
-    MuzzleLocation->SetRelativeLocation(FVector(0.0f, 56.5f, 11.3f));
-
 	// Configure character movement
 	GetCharacterMovement()->GroundFriction = 3.0f;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
-	GetCharacterMovement()->MaxFlySpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
     GetCharacterMovement()->bUseFlatBaseForFloorChecks = true;
-
-
-    CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
-    CursorToWorld->SetupAttachment(RootComponent);
-    static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
-    if (DecalMaterialAsset.Succeeded())
-    {
-        CursorToWorld->SetDecalMaterial(DecalMaterialAsset.Object);
-    }
-    CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
-    CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
-
+    /*GetCharacterMovement()->bConstrainToPlane = true;
+    GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, -1.0f));*/
+    IncreasePowerBarDelegate.BindUObject(this,&AMyProject2DCharacter::IncreasePowerBar);
+    
     // Activate ticking in order to update the cursor every frame.
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.bStartWithTickEnabled = true;
@@ -96,13 +100,61 @@ AMyProject2DCharacter::AMyProject2DCharacter()
 void AMyProject2DCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
-    GunMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-    GunMesh->SetRelativeLocation(FVector(6.f,0.f,-14.f));
-    GunMesh->SetRelativeScale3D(FVector(0.45f,0.45f,0.45f));
+    if (ARangedWeapon* Weapon = GetWorld()->SpawnActor<ARangedWeapon>(StartingWeaponClass))
+    {
+        InitWeapon(Weapon);
+    }
+    GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AMyProject2DCharacter::OnHit);
+}
+void AMyProject2DCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    if (Health == 0) return;
+    if (GetbIsFiring())
+    {
+        Fire();
+    }
+    // Update animation to match the motion
+    UpdateAnimation();
 }
 //////////////////////////////////////////////////////////////////////////
 // Animation
+
+void AMyProject2DCharacter::InitWeapon(ARangedWeapon* Weapon)
+{
+    RangedWeapon = Weapon;
+    RangedWeapon->SetOwner(this);
+    RangedWeapon->AttachToComponent(GetSprite(),FAttachmentTransformRules::SnapToTargetIncludingScale);
+    RangedWeapon->SetActorRelativeLocation(FVector(-20.f,0.f,-8.f));
+    RangedWeapon->SetActorRelativeRotation(FRotator(0.f,0.f,0.f));
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    RangedWeapon->SetPC(PC);
+}
+void AMyProject2DCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    if (ARoom* Room = Cast<ARoom>(OtherActor))
+    {
+        FVector PlayerPosition = GetActorLocation();
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        GameMode->OpenDoor(PlayerPosition,Room,GetCharacterMovement()->GetLastInputVector(),this);
+    }
+    else if (APickableItem* PickedItem = Cast<APickableItem>(OtherActor))
+    {
+        PickedItem->ItemContained->OnPickup(this);
+        PickedItem->PickedUp();
+    }
+    else if (APickableWeapon* PickableWeapon = Cast<APickableWeapon>(OtherActor))
+    {
+        AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+        RangedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        GameMode->DropWeapon(RangedWeapon, PickableWeapon->GetActorLocation(),PickableWeapon);
+        ARangedWeapon* PickedWeapon = PickableWeapon->RangedWeapon;
+        FDetachmentTransformRules rules = FDetachmentTransformRules(EDetachmentRule::KeepRelative,true);
+        PickedWeapon->DetachFromActor(rules);
+        InitWeapon(PickedWeapon);
+        LaunchCharacter((-GetCharacterMovement()->GetLastInputVector()) * 200, true, true);
+    }
+}
 
 void AMyProject2DCharacter::UpdateAnimation()
 {
@@ -110,16 +162,42 @@ void AMyProject2DCharacter::UpdateAnimation()
 	const float PlayerSpeedSqr = PlayerVelocity.SizeSquared();
     UPaperFlipbook* DesiredAnimation;
     
-    float GunRotation = GunMesh->GetRelativeRotation().GetComponentForAxis(EAxis::Z);
-    if (GunRotation < 90.f && GunRotation > -90.f)
+    float GunRotation = RangedWeapon->GetGunRotation().GetComponentForAxis(EAxis::Z);
+    if (PlayerSpeedSqr > 0.0f)
     {
-        DesiredAnimation = IdleFrontAnimation;
-    }else
-    {
-        DesiredAnimation = IdleBackAnimation;
+        if (GunRotation >= 0 && GunRotation <= 90.f)
+        {
+            DesiredAnimation = RunningRightAnimation;
+        }
+        else if (GunRotation >= -180.f && GunRotation <= -80.f)
+        {
+            DesiredAnimation = RunningLeftAnimation;
+        }
+        else if (GunRotation < 0.f && GunRotation > -80.f)
+        {
+            DesiredAnimation = RunningBackAnimation;
+        }
+        else{
+            DesiredAnimation = RunningFrontAnimation;
+        }
     }
-	// Are we moving or standing still?
-//	UPaperFlipbook* DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleFrontAnimation;
+    else{
+        if (GunRotation >= 0 && GunRotation <= 90.f)
+        {
+            DesiredAnimation = IdleRightAnimation;
+        }
+        else if (GunRotation >= -180.f && GunRotation <= -80.f)
+        {
+            DesiredAnimation = IdleLeftAnimation;
+        }
+        else if (GunRotation < 0.f && GunRotation > -80.f)
+        {
+            DesiredAnimation = IdleBackAnimation;
+        }
+        else{
+            DesiredAnimation = IdleFrontAnimation;
+        }
+    }
     
 	if( GetSprite()->GetFlipbook() != DesiredAnimation 	)
 	{
@@ -127,112 +205,6 @@ void AMyProject2DCharacter::UpdateAnimation()
 	}
 }
 
-void AMyProject2DCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	
-	UpdateCharacter();
-    
-    if (CursorToWorld != nullptr)
-    {
-        if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-        {
-            if (UWorld* World = GetWorld())
-            {
-                FHitResult HitResult;
-                FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
-                FVector StartLocation = SideViewCameraComponent->GetComponentLocation();
-                FVector EndLocation = SideViewCameraComponent->GetComponentRotation().Vector() * 2000.0f;
-                Params.AddIgnoredActor(this);
-                World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
-                FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
-                CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
-            }
-        }
-        else if (APlayerController* PC = Cast<APlayerController>(GetController()))
-        {
-            FHitResult TraceHitResult;
-            PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
-            FVector CursorFV = TraceHitResult.ImpactNormal;
-            FRotator CursorR = CursorFV.Rotation();
-            CursorToWorld->SetWorldLocation(TraceHitResult.Location);
-            CursorToWorld->SetWorldRotation(CursorR);
-        }
-    }
-    
-    // Update animation to match the motion
-    UpdateAnimation();
-
-    // Now setup the rotation of the controller based on the direction we are travelling
-    const FVector PlayerVelocity = GetVelocity();
-    float TravelDirection = PlayerVelocity.X;
-    
-    // Declaration of variables to hold mouse vectors.
-    FVector MouseDir = FVector::ZeroVector;
-    FVector MousePos = FVector::ZeroVector;
-    // Pass by reference to get mouse position in world space and direction vector.
-    APlayerController* PC = Cast<APlayerController>(GetController());
-    PC->DeprojectMousePositionToWorld(MousePos, MouseDir);
-
-    // Declaration of vector of intersection.
-    FVector Intersection = FVector::ZeroVector;
-    float t = 0.f;
-    // Vector from camera that crosses the plane we want the intersection.
-    FVector LineEnd = MousePos + MouseDir * 2000.f;
-    // Get intersection vector. Returns true if intersection was possible.
-    bool bIntersectionSuccess = UKismetMathLibrary::LinePlaneIntersection_OriginNormal(
-        MousePos,
-        LineEnd,
-        GetActorLocation(),
-        GetActorUpVector(),
-        t,
-        Intersection
-    );
-    // Do stuff if line intersected.
-    if (bIntersectionSuccess)
-    {
-        // Calculate direction vector from the pawn body forward vector to intersection vector.
-        FVector DirToIntersection = (Intersection -  GunMesh->GetComponentLocation()).GetSafeNormal();
-        // Gets the cosine of the angle between the pawns body forward vector and the direction to intersection.
-        float dotForward = GunMesh->GetRightVector() | DirToIntersection;
-        // Converts the cosine of the angle to degrees.
-        float Angle = acos(dotForward) * (180.f / PI);
-        // Only update the rotation if it is greater to avoid unwanted behaviour.
-        if (Angle > .2f)
-        {
-            // Clamp to limit how fast the component can rotate.
-            //Angle = FMath::Clamp(Angle, 0.f, 25.f);
-            
-            // Gets the cosine of the angle with the right vector against direction to intersection to know on what side of the component is the intersection.
-            float dotSide = GunMesh->GetForwardVector() | DirToIntersection;
-
-            // Negates the value depending on what side is the intersection relative to the component.
-            Angle *= 10.f * ((dotSide < 0.f) ? 1.f : -1.f);
-
-            // Create rotator with variable.
-            float BodyRotator = Angle * DeltaSeconds;
-        
-            //Set the rotation so that the character faces his direction of travel.
-            GunMesh->AddRelativeRotation(FRotator(0.f, BodyRotator, 0.f));
-            
-        }
-    }
-}
-
-void AMyProject2DCharacter::OnFire()
-{
-    if(GetWorld() != NULL)
-    {
-        SpawnRotation = GunMesh->GetComponentRotation();
-
-        SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) +SpawnRotation.RotateVector(GunOffset);
-
-        FActorSpawnParameters ActorSpawnParams;
-        ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-        GetWorld()->SpawnActor<AActorToSpawn>(Projectile, SpawnLocation, SpawnRotation, ActorSpawnParams);
-    }
-}
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -243,7 +215,9 @@ void AMyProject2DCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
     PlayerInputComponent->BindAxis("MoveUp", this, &AMyProject2DCharacter::MoveUp);
     
     
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyProject2DCharacter::OnFire);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyProject2DCharacter::StartFire);
+    PlayerInputComponent->BindAction("Fire", IE_Released, this, &AMyProject2DCharacter::StopFire);
+    PlayerInputComponent->BindAction("Restart", IE_Released, this, &AMyProject2DCharacter::Die);
 
 }
 
@@ -263,42 +237,79 @@ void AMyProject2DCharacter::MoveUp(float Value)
     AddMovementInput(FVector(0.0f, 1.0f, 0.0f), Value);
 }
 
-void AMyProject2DCharacter::UpdateCharacter()
-{
-}
 
+void AMyProject2DCharacter::StartFire()
+{
+    bIsFiring = true;
+}
+void AMyProject2DCharacter::StopFire()
+{
+    bIsFiring = false;
+}
+void AMyProject2DCharacter::Fire()
+{
+    RangedWeapon->OnFire(IncreasePowerBarDelegate);
+}
 
 void AMyProject2DCharacter::Hit(AEnnemyBase* ennemy)
 {
-    if (bCanTakeDamage)
+    if (GetbCanTakeDamage())
     {
         UGameInstance* GI = Cast<UGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
         if(GI)
         {
             DecrementHealth(ennemy->DamageValue);
+            DecreasePowerBar();
             bCanTakeDamage = false;
+            GetSprite()->SetSpriteColor(FLinearColor::Red);
             if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
             {
                 GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::BecomeVulnerable,3.f,false);
+
             }
         }
     }
 }
 
+void AMyProject2DCharacter::DecreasePowerBar()
+{
+    if (GetPowerBar() == 100.f) UnPower();
+    PowerBar = GetPowerBar() >= 10.f ? GetPowerBar() - 10.f : 0.f;
+}
+void AMyProject2DCharacter::IncreasePowerBar()
+{
+    PowerBar = GetPowerBar() < 100.f ? GetPowerBar() + (1.f * PowerBarMultiplier) : 100.f;
+    if (GetPowerBar() == 100.f) Power();
+}
+
+void AMyProject2DCharacter::Power()
+{
+}
+void AMyProject2DCharacter::UnPower()
+{
+}
+
 void AMyProject2DCharacter::BecomeVulnerable()
 {
     bCanTakeDamage = true;
+    GetSprite()->SetSpriteColor(FLinearColor(1.f,1.f,1.f,1.f));
 }
 
 void AMyProject2DCharacter::DecrementHealth(int damage)
 {
     Health -= damage;
-    UE_LOG(LogTemp, Warning, TEXT("health : %.0f"), Health);
     if (Health <= 0.f)
     {
-        Die();
+        GetSprite()->SetSpriteColor(FLinearColor(1.f, 1.f, 1.f, 1.f));
+        GetSprite()->SetFlipbook(DeathAnimation);
+        if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandler))
+        {
+            GetWorldTimerManager().SetTimer(TimerHandler, this, &AMyProject2DCharacter::Die, 3.f, false);
+        }
     }
 }
 void AMyProject2DCharacter::Die()
 {
+    AMyProjectGameMode* GameMode = (AMyProjectGameMode*)GetWorld()->GetAuthGameMode();
+    GameMode->RestartGame();
 }
