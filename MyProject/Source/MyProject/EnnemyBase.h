@@ -2,15 +2,14 @@
 
 #pragma once
 
-#include "Projectile.h"
+#include "ActorToSpawn.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "PaperCharacter.h"
 #include "EnnemyBase.generated.h"
 
 class AMyProject2DCharacter;
 UCLASS()
-class MYPROJECT_API AEnnemyBase : public APaperCharacter
+class MYPROJECT_API AEnnemyBase : public ACharacter
 {
     GENERATED_BODY()
 
@@ -20,7 +19,7 @@ public:
 
     virtual void Tick(float DeltaTime) override;
 
-    void Hit(AProjectile* projectile);
+    void Hit(AActorToSpawn* projectile);
 //    void Hit(MeleeWeapon* projectile);
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCapsuleComponent* CapsuleComp;

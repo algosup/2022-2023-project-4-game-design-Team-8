@@ -1,0 +1,14 @@
+{ "columns":8,
+ "image":"..\/..\/sprites\/visustella\/VisuStella_A5.png",
+ "imageheight":768,
+ "imagewidth":384,
+ "margin":0,
+ "name":"VisuStella_A5",
+ "spacing":0,
+ "tilecount":128,
+ "tiledversion":"1.10.0",
+ "tileheight":48,
+ "tilewidth":48,
+ "type":"tileset",
+ "version":"1.10"
+}
