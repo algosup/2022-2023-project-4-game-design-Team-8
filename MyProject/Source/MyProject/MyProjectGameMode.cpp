@@ -48,7 +48,7 @@ AMyProjectGameMode::AMyProjectGameMode()
     static ConstructorHelpers::FObjectFinder<USoundCue> Victory(TEXT("SoundCue'/Game/YulSounds/VictoryCue.VictoryCue'"));
     if (Cue.Object != nullptr)
     {
-        // UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object);
+         UGameplayStatics::PlaySound2D(GetWorld(),Cue.Object);
     }
     if (RoomClear.Object != nullptr)
     {
