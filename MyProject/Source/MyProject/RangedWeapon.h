@@ -5,8 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnnemyBase.h"
+#include "Sound/SoundCue.h"
+#include "PaperSpriteComponent.h"
+#include "PaperFlipbookComponent.h"
+
 #include "RangedWeapon.generated.h"
 
+class AMyProject2DCharacter;
 UCLASS()
 class MYPROJECT_API ARangedWeapon : public AActor
 {
@@ -15,21 +20,55 @@ class MYPROJECT_API ARangedWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ARangedWeapon();
-
+private:
+    virtual void RotateGun(float DeltaTime);
+    virtual void AllowShoot();
 protected:
+    bool bCanShoot = true;
+    APlayerController* PC;
+
+    UPROPERTY(EditDefaultsOnly, Category = WeaponStats)
+    float WeaponDamage = 0.f;
+    UPROPERTY(EditDefaultsOnly, Category = WeaponStats)
+    float WeaponFireRate = 0.f;
+
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
+    class USoundCue* WeaponSFX;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+    FTimerHandle TimerHandler;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	AEnnemyBase* actor;
-    	// void Spawn();
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UBoxComponent* SpawnVolume;
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AEnnemyBase> Projectile;
+    virtual float GetWeaponDamage() { return WeaponDamage; }
+    virtual float GetWeaponFireRate() { return WeaponFireRate; }
+    virtual bool GetbCanShoot() { return bCanShoot; }
+    virtual FTimerHandle& GetTimerHandler() { return TimerHandler; }
+public:
+    void SetPC(APlayerController* PlayerController) {
+        PC = PlayerController;
+    };
+	virtual void OnFire(FSimpleDelegate IncreasePowerBarDelegate);
+
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
+        FString WeaponName;
     
-    FTimerHandle SpawnHandle;
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+		class UPaperFlipbookComponent* GunFlipbookComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+		class UPaperFlipbook* GunFlipbook;
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
+		class UPaperFlipbook* MuzzleFlash;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Weapon)
+		class USceneComponent* MuzzleLocation;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+        FVector GunOffset;
+    
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AProjectile> Projectile;
+
+    virtual TSubclassOf<class AProjectile> GetProjectile() { return Projectile; }
+	virtual FRotator GetGunRotation() { return GetActorRotation(); }
 };
