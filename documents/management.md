@@ -14,32 +14,32 @@
 <img src="/documents/Images/synthesis.png" width="800px"></img> <br>
 <!-- ![Daily Meeting Example](/documents/Images/synthesis.png) -->
 - > Daily Meeting example
-- ### Workflow
-- **Create a Task** <br>
+- ### Workflow Example
+- **Create a Task 1/9** <br>
 <img src="/documents/Images/1.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/1.png) --> 
-- **Assign a Teammate** <br>
+- **Assign a Teammate 2/9** <br>
 <img src="/documents/Images/2.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/2.png) -->
-- **Provide a Description**  <br>
+- **Provide a Description 3/9**  <br>
 <img src="/documents/Images/3.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/3.png) -->
-- **Add link to Development Document** <br>
+- **Add link to Development Document 4/9** <br>
 <img src="/documents/Images/4.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/4.png) -->
-- **Add Timespan or Simple Due Date** <br>
+- **Add Timespan or Simple Due Date 5/9** <br>
 <img src="/documents/Images/5.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/5.png) -->
-- **Add Dependencies** <br>
+- **Add Dependencies 6/9 ** <br>
 <img src="/documents/Images/6.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/6.png) -->
-- **Add Subtasks, their Assignees & Due Dates** <br>
+- **Add Subtasks, their Assignees & Due Dates 7/9** <br>
 <img src="/documents/Images/7.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/7.png) -->
-- **Add status or bonus checklists with assignees** <br>
+- **Add status or bonus checklists with assignees 8/9** <br>
 <img src="/documents/Images/8.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/8.png) -->
-- **Result: supercharged GANTT Diagram** <br>
+- **Result: supercharged GANTT Diagram 9/9** <br>
 <img src="/documents/Images/9.png" width="800px"></img> <br> <hr>
 <!-- ![](/documents/Images/9.png) -->
 - ## Daily Tracking
@@ -215,8 +215,15 @@
 		- Basic Animations
 - ### 7/7 Week Synthesis (Closing Meeting)
 - ## Bonus
+<img src="/documents/Images/mathiss.png" width="800px"></img> <br>
+<img src="/documents/Images/leos.png" width="800px"></img> <br>
+<img src="/documents/Images/davids.png" width="800px"></img> <br>
+<img src="/documents/Images/mathieus.png" width="800px"></img> <br>
+<img src="/documents/Images/arthurs.png" width="800px"></img> <br>
+<!--
 ![Mathis' Motivation](/documents/Images/mathiss.png)
 ![Leo's Motivation](/documents/Images/leos.png)
 ![David's Motivation](/documents/Images/davids.png)
 ![Mathieu's Motivation](/documents/Images/mathieus.png)
 ![Arthur's Motivation](/documents/Images/arthurs.png)
+-->
