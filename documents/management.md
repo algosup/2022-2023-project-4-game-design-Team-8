@@ -30,7 +30,7 @@
 - **Add Timespan or Simple Due Date 5/9** <br>
 <img src="/documents/Images/5.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/5.png) -->
-- **Add Dependencies 6/9 ** <br>
+- **Add Dependencies 6/9** <br>
 <img src="/documents/Images/6.png" width="800px"></img> <br>
 <!-- ![](/documents/Images/6.png) -->
 - **Add Subtasks, their Assignees & Due Dates 7/9** <br>
