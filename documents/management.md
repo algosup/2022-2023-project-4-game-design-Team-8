@@ -204,8 +204,8 @@
 		- Basic Animations
 - ### 7/7 Week Synthesis (Closing Meeting)
 - ## Bonus
-![Mathis' Motivation](documents/Images/mathiss.png)
-![Leo's Motivation](documents/Images/leos.png)
-![David's Motivation](documents/Images/davids.png)
-![Mathieu's Motivation](documents/Images/mathieus.png)
-![Arthur's Motivation](documents/Images/arthurs.png)
+![Mathis' Motivation](/documents/Images/mathiss.png)
+![Leo's Motivation](/documents/Images/leos.png)
+![David's Motivation](/documents/Images/davids.png)
+![Mathieu's Motivation](/documents/Images/mathieus.png)
+![Arthur's Motivation](/documents/Images/arthurs.png)
